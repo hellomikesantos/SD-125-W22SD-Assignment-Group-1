@@ -23,8 +23,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Models
         public Priority Priority { get; set; }
         public virtual Project Project { get; set; }
         public virtual ICollection<Comment> Comment { get; set; } = new HashSet<Comment>();
-        public virtual ICollection<Developer> Developer { get; set; } = new HashSet<Developer>();
+        public virtual ICollection<ApplicationUser> Developer { get; set; } = new HashSet<ApplicationUser>();
     }
-
-    
 }
