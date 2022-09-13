@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public virtual ICollection<Task> Task { get; set; } = new HashSet<Task>();
+        public virtual ICollection<ProjectTask> ProjectTask { get; set; } = new HashSet<ProjectTask>();
     }
 }
