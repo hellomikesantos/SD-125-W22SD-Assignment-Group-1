@@ -13,8 +13,8 @@
         public string Name { get; set; }
         public Priority Priority { get; set; }
         public virtual Project Project { get; set; }
-
         public virtual ICollection<Comment> Comment { get; set; } = new HashSet<Comment>();
+        public virtual ICollection<Developer> Developer { get; set; } = new HashSet<Developer>();
     }
 
     
