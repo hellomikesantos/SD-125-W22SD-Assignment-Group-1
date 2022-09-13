@@ -10,5 +10,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data
             : base(options)
         {
         }
+
+        public DbSet<Comment> Comment { get; set; }
+        public DbSet<Project> Project { get; set; }
+        public DbSet<SD_340_W22SD_2021_2022___Final_Project_2.Models.Task> Task { get; set; }
     }
 }
