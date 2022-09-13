@@ -12,8 +12,9 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public Priority Priority { get; set; }
+        public virtual Project Project { get; set; }
 
-        public ICollection<Task> Tasks { get; set; } = new HashSet<Task>();
+        public virtual ICollection<Comment> Comment { get; set; } = new HashSet<Comment>();
     }
 
     

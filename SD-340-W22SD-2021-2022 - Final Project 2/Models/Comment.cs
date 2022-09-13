@@ -4,5 +4,6 @@
     {
         public int ID { get; set; }
         public string Content { get; set; }
+        public virtual Task Task { get; set; }
     }
 }
