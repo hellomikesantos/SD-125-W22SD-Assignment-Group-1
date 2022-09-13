@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
+using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
@@ -25,6 +26,11 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         [HttpPost]
         public IActionResult Create(string name)
         {
+            Project project = new Project();
+
+            project.Name = name;
+            _context.Project.Add(project);
+            _context.SaveChanges();
 
             return View();
         }
