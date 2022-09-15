@@ -253,7 +253,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
                     b.HasIndex("ProjectTaskId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comment", (string)null);
                 });
 
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
@@ -275,7 +275,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
                     b.HasIndex("ProjectManagerId");
 
-                    b.ToTable("Project");
+                    b.ToTable("Project", (string)null);
                 });
 
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", b =>
@@ -303,7 +303,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectTask");
+                    b.ToTable("ProjectTask", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

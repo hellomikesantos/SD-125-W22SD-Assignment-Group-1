@@ -1,5 +1,12 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<SD_340_W22SD_2021_2022___Final_Project_2.Models.Project>
+
+<h1>List of Projects</h1>
+
+<ul>
+    @foreach (Project project in Model)
+    {
+        <li>
+            @project.Name
+        </li>
+    }
+</ul>

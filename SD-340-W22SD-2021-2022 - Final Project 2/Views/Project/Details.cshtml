@@ -1,0 +1,30 @@
+﻿@model SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels.ProjectDetailsViewModel
+
+<h1>@Model.Project.Name</h1>
+
+
+<ul>
+    @foreach (ProjectTask task in Model.Tasks)
+    {
+        <li>@task.Name - @task.Priority | @task.Hours</li>
+    }
+</ul>
+
+<form asp-action="Create" asp-controller="Task" method="post" asp-route-projectId="@Model.Project.Id">
+    <input name="name" type="text" />
+    <input name="hours" type="number" />
+    <select name="priority">
+        <option value="0">Low</option>
+        <option value="1">Medium</option>
+        <option value="2">High</option>
+    </select>
+    <button type="submit">Create Task</button>
+</form>
+
+
+<ul>
+    @foreach (ApplicationUser developer in Model.Developers)
+    {
+        <li>@developer.UserName</li>
+    }
+</ul>
