@@ -6,11 +6,11 @@
         public List<Ticket> Tickets { get; set; }
         public List<ApplicationUser> Developers { get; set; }
 
-        public ProjectDetailsViewModel(Project project, List<Ticket> tickets/*, List<ApplicationUser> developers*/)
+        public ProjectDetailsViewModel(Project project, List<Ticket> tickets, List<ApplicationUser> developers)
         {
             Project = project;
             Tickets = tickets;
-            //Developers = developers;
+            Developers = developers;
         }
     }
 }
