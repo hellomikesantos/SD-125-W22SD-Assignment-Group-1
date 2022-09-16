@@ -21,13 +21,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         [HttpPost]
         public IActionResult Create(int projectId, string name, int hours, Priority priority)
         {
-            ProjectTask task = new ProjectTask();
+            Ticket task = new Ticket();
             task.ProjectId = projectId;
             task.Name = name;
             task.Hours = hours;
             task.Priority = priority;
 
-            _context.ProjectTask.Add(task);
+            //_context.Ticket.Add(task);
             _context.SaveChanges();
 
             return RedirectToAction("Details", "Project", new { projectId = projectId });

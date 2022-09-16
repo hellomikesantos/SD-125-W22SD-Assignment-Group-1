@@ -12,8 +12,8 @@ using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220913014816_RenameTaskToProjectTask")]
-    partial class RenameTaskToProjectTask
+    [Migration("20220916024204_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -226,28 +226,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Comment", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProjectTaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ProjectTaskId");
-
-                    b.ToTable("Comment");
-                });
-
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -265,13 +243,19 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.ToTable("Project");
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", b =>
+            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Hours")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -287,7 +271,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectTask");
+                    b.ToTable("Ticket");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -341,21 +325,10 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Comment", b =>
-                {
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", "ProjectTask")
-                        .WithMany("Comment")
-                        .HasForeignKey("ProjectTaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProjectTask");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", b =>
+            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
                 {
                     b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", "Project")
-                        .WithMany("ProjectTask")
+                        .WithMany("Ticket")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -365,12 +338,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
                 {
-                    b.Navigation("ProjectTask");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", b =>
-                {
-                    b.Navigation("Comment");
+                    b.Navigation("Ticket");
                 });
 #pragma warning restore 612, 618
         }

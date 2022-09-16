@@ -4,9 +4,9 @@
 
 
 <ul>
-    @foreach (ProjectTask task in Model.Tasks)
+    @foreach (Ticket ticket in Model.Tickets)
     {
-        <li>@task.Name - @task.Priority | @task.Hours</li>
+        <li>@ticket.Name - @ticket.Priority | @ticket.Hours</li>
     }
 </ul>
 
