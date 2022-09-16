@@ -41,17 +41,18 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         public IActionResult Details(int projectId)
         {
-            Project? project = _context.Project.Include(p => p.ProjectTask).Include(p => p.Developer).FirstOrDefault(p => p.Id == projectId);
+            //Project? project = _context.Project.Include(p => p.Ticket).Include(p => p.Developer).FirstOrDefault(p => p.Id == projectId);
+            Project? project = _context.Project.Include(p => p.Ticket).FirstOrDefault(p => p.Id == projectId);
 
             if (project == null)
             {
                 return NotFound();
             }
 
-            List<ProjectTask> tasks = project.ProjectTask.ToList();
-            List<ApplicationUser> developers = project.Developer.ToList();
+            List<Ticket> tickets = project.Ticket.ToList();
+            //List<ApplicationUser> developers = project.Developer.ToList();
 
-            ProjectDetailsViewModel viewModel = new ProjectDetailsViewModel(project, tasks, developers);
+            ProjectDetailsViewModel viewModel = new ProjectDetailsViewModel(project, tickets/*, developers*/);
 
             return View(viewModel);
         }

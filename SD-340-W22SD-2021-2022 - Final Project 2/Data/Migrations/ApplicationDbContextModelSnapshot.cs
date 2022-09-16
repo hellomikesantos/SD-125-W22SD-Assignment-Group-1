@@ -201,12 +201,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProjectTaskId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -227,33 +221,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("ProjectTaskId");
-
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Comment", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProjectTaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ProjectTaskId");
-
-                    b.ToTable("Comment", (string)null);
                 });
 
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
@@ -268,23 +236,21 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProjectManagerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjectManagerId");
 
                     b.ToTable("Project", (string)null);
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", b =>
+            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Hours")
                         .HasColumnType("int");
@@ -303,7 +269,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectTask", (string)null);
+                    b.ToTable("Ticket", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -357,41 +323,10 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", null)
-                        .WithMany("Developer")
-                        .HasForeignKey("ProjectId");
-
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", null)
-                        .WithMany("Developer")
-                        .HasForeignKey("ProjectTaskId");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Comment", b =>
-                {
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", "ProjectTask")
-                        .WithMany("Comment")
-                        .HasForeignKey("ProjectTaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProjectTask");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
-                {
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", "ProjectManager")
-                        .WithMany()
-                        .HasForeignKey("ProjectManagerId");
-
-                    b.Navigation("ProjectManager");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", b =>
+            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
                 {
                     b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", "Project")
-                        .WithMany("ProjectTask")
+                        .WithMany("Ticket")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -401,16 +336,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
                 {
-                    b.Navigation("Developer");
-
-                    b.Navigation("ProjectTask");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ProjectTask", b =>
-                {
-                    b.Navigation("Comment");
-
-                    b.Navigation("Developer");
+                    b.Navigation("Ticket");
                 });
 #pragma warning restore 612, 618
         }

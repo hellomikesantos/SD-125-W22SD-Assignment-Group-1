@@ -3,14 +3,14 @@
     public class ProjectDetailsViewModel
     {
         public Project Project { get; set; }
-        public List<ProjectTask> Tasks { get; set; }
+        public List<Ticket> Tickets { get; set; }
         public List<ApplicationUser> Developers { get; set; }
 
-        public ProjectDetailsViewModel(Project project, List<ProjectTask> tasks, List<ApplicationUser> developers)
+        public ProjectDetailsViewModel(Project project, List<Ticket> tickets/*, List<ApplicationUser> developers*/)
         {
             Project = project;
-            Tasks = tasks;
-            Developers = developers;
+            Tickets = tickets;
+            //Developers = developers;
         }
     }
 }
