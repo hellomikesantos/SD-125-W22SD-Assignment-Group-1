@@ -10,7 +10,7 @@
     }
 </ul>
 
-<form asp-action="Create" asp-controller="Task" method="post" asp-route-projectId="@Model.Project.Id">
+<form asp-action="Create" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Project.Id">
     <input name="name" type="text" />
     <input name="hours" type="number" />
     <select name="priority">
@@ -22,9 +22,9 @@
 </form>
 
 
-<ul>
+@*<ul>
     @foreach (ApplicationUser developer in Model.Developers)
     {
         <li>@developer.UserName</li>
     }
-</ul>
+</ul>*@

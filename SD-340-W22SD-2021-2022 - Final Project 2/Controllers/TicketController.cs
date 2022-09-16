@@ -4,11 +4,11 @@ using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
-    public class TaskController : Controller
+    public class TicketController : Controller
     {
         private ApplicationDbContext _context;
 
-        public TaskController(ApplicationDbContext context)
+        public TicketController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -21,13 +21,14 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         [HttpPost]
         public IActionResult Create(int projectId, string name, int hours, Priority priority)
         {
-            Ticket task = new Ticket();
-            task.ProjectId = projectId;
-            task.Name = name;
-            task.Hours = hours;
-            task.Priority = priority;
+            Ticket ticket = new Ticket();
+            ticket.ProjectId = projectId;
+            ticket.Name = name;
+            ticket.Hours = hours;
+            ticket.Priority = priority;
+            ticket.Completed = false;
 
-            //_context.Ticket.Add(task);
+            _context.Ticket.Add(ticket);
             _context.SaveChanges();
 
             return RedirectToAction("Details", "Project", new { projectId = projectId });

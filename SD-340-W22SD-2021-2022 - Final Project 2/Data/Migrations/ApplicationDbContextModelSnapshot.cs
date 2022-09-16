@@ -238,7 +238,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Project");
+                    b.ToTable("Project", (string)null);
                 });
 
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
@@ -269,7 +269,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Ticket");
+                    b.ToTable("Ticket", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
