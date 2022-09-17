@@ -45,5 +45,20 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
             return RedirectToAction(nameof(UnassignedDevelopers));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignProjectManager(string userId)
+        {
+            ApplicationUser? user = _context.Users.Find(userId);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            await _userManager.AddToRoleAsync(user, "Project Manager");
+
+            return RedirectToAction(nameof(UnassignedDevelopers));
+        }
     }
 }
