@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
@@ -22,11 +23,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             return View(projects);
         }
 
+        [Authorize(Roles = "Project Manager")]
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "Project Manager")]
         [HttpPost]
         public IActionResult Create(string name)
         {
