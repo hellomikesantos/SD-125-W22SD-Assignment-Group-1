@@ -14,17 +14,40 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Models
 
             List<string> roles = new List<string>
             {
-                "Project Manager", "Developer"
-            };
+                "Admin", "Project Manager", "Developer"
+            };    
 
-            if (!context.Roles.Any())
+            foreach (string role in roles)
             {
-                foreach (string role in roles)
+                var identityRole = new IdentityRole(role);
+
+                if (!context.Roles.Contains(identityRole))
                 {
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                    await roleManager.CreateAsync(identityRole);
                 }
-                await context.SaveChangesAsync();
             }
+
+            if (context.Users.FirstOrDefault(u => u.UserName == "admin@admin.com") == null)
+            {
+                ApplicationUser user = new ApplicationUser
+                {
+                    Email = "admin@admin.com",
+                    NormalizedEmail = "ADMIN@ADMIN.COM",
+                    UserName = "admin@admin.com",
+                    NormalizedUserName = "ADMIN@ADMIN.COM",
+
+                };
+                var password = new PasswordHasher<ApplicationUser>();
+                var hashed = password.HashPassword(user, "abcD1234!");
+                user.PasswordHash = hashed;
+                user.EmailConfirmed = true;
+
+                await userManager.CreateAsync(user);
+                await userManager.AddToRoleAsync(user, "Admin");
+
+            }
+
+            await context.SaveChangesAsync();
         }
     }
 }
