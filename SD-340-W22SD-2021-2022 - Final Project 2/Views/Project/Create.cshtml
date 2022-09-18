@@ -1,12 +1,16 @@
 ﻿@model IEnumerable<ApplicationUser>
 
-@foreach(ApplicationUser user in Model)
-{
-    <h4>@user.UserName</h4>
-}
-
 <form asp-action="Create" method="post">
     <label for="name">Project Name:</label>
-    <input type="text" name="name" />
+    <input type="text" name="name" /><br/>
+
+    @foreach(ApplicationUser user in Model)
+    {
+        <div>
+            <input type="checkbox" id="developer" name="developer" value="@user.Id">                   
+            <label for="developer">@user.UserName</label>
+        </div>
+    }
+
     <button type="submit">Create Project</button>
 </form>
