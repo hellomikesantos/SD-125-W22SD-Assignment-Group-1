@@ -58,14 +58,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                     Project project = new Project();
 
                     project.Name = name;
-                    project.User.Add(projectManager);
 
                     _context.Project.Add(project);
 
                     foreach (String dev in developer)
                     {
                         ApplicationUser projectDeveloper = await _userManager.FindByIdAsync(dev);
-                        project.User.Add(projectDeveloper);
+                        project.Developers.Add(projectDeveloper);
                     }
 
                     _context.SaveChanges();
@@ -83,7 +82,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         {
             Project? project = _context.Project
                 .Include(p => p.Ticket)
-                .Include(u => u.User)
+                .Include(u => u.Developers)
                 .FirstOrDefault(p => p.Id == projectId);
 
             if (project == null)
@@ -92,7 +91,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             }
 
             List<Ticket> tickets = project.Ticket.ToList();
-            List<ApplicationUser> developers = project.User.ToList();
+            List<ApplicationUser> developers = project.Developers.ToList();
 
             ProjectDetailsViewModel viewModel = new ProjectDetailsViewModel(project, tickets, developers);
 
