@@ -7,6 +7,8 @@
     {
         <li>
             @project.Name
+
+            <a asp-controller="Project" asp-action="Details" asp-route-projectId="@project.Id">Details</a>
         </li>
     }
 </ul>
