@@ -46,36 +46,32 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         [Authorize(Roles = "Project Manager")]
         [HttpPost]
-        public async Task<IActionResult> Create(string name, string[] developer)
+        public async Task<IActionResult> Create(string name, string[] developerIds)
         {
-            if (name != null)
+            if (name == null)
             {
-                try
-                {
-                    string userName = User.Identity.Name;
-                    ApplicationUser projectManager = await _userManager.FindByNameAsync(userName);
-
-                    Project project = new Project();
-
-                    project.Name = name;
-
-                    _context.Project.Add(project);
-
-                    foreach (String dev in developer)
-                    {
-                        ApplicationUser projectDeveloper = await _userManager.FindByIdAsync(dev);
-                        project.Developers.Add(projectDeveloper);
-                    }
-
-                    _context.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    return RedirectToAction("Error", "Home");
-                }
+                return BadRequest("\"name\" query is missing");
             }
 
-            return RedirectToAction("Index");
+            try
+            {
+                Project project = new Project();
+                project.Name = name;
+                foreach (String developerId in developerIds)
+                {
+                    ApplicationUser dev = await _userManager.FindByIdAsync(developerId);
+                    project.Developers.Add(dev);
+                }
+
+                _context.Project.Add(project);
+                _context.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         public IActionResult Details(int projectId)

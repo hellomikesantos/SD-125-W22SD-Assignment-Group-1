@@ -1,16 +1,22 @@
 ﻿@model IEnumerable<ApplicationUser>
 
-<form asp-action="Create" method="post">
-    <label for="name">Project Name:</label>
-    <input type="text" name="name" /><br/>
+<form asp-action="Create" asp-controller="Project" method="post">
+    <label for="name"><h6>Name Project</h6></label>
+    <br />
+    <input type="text" name="name" />
 
-    @foreach(ApplicationUser user in Model)
+    <hr />
+
+    <h6>Assign Developers</h6>
+    @foreach (ApplicationUser developer in Model)
     {
         <div>
-            <input type="checkbox" id="developer" name="developer" value="@user.Id">                   
-            <label for="developer">@user.UserName</label>
+            <input type="checkbox" id="developerIds" name="developerIds" value="@developer.Id">
+            <label for="developerIds">@developer.UserName</label>
         </div>
     }
+
+    <hr />
 
     <button type="submit">Create Project</button>
 </form>
