@@ -28,9 +28,20 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         }
 
         [Authorize(Roles = "Project Manager")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            List<ApplicationUser>? developers;
+
+            try
+            {
+                developers = (List<ApplicationUser>?)await _userManager.GetUsersInRoleAsync("Developer");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            return View(developers);
         }
 
         [Authorize(Roles = "Project Manager")]
