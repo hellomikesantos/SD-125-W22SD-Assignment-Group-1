@@ -28,14 +28,25 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         }
 
         [Authorize(Roles = "Project Manager")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            List<ApplicationUser>? developers;
+
+            try
+            {
+                developers = (List<ApplicationUser>?)await _userManager.GetUsersInRoleAsync("Developer");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            return View(developers);
         }
 
         [Authorize(Roles = "Project Manager")]
         [HttpPost]
-        public async Task<IActionResult> Create(string name)
+        public async Task<IActionResult> Create(string name, string[] developer)
         {
             if (name != null)
             {
@@ -47,10 +58,16 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                     Project project = new Project();
 
                     project.Name = name;
-                    project.ProjectManager = projectManager;
-                    project.ProjectManagerId = projectManager.Id;
+                    project.User.Add(projectManager);
 
                     _context.Project.Add(project);
+
+                    foreach (String dev in developer)
+                    {
+                        ApplicationUser projectDeveloper = await _userManager.FindByIdAsync(dev);
+                        project.User.Add(projectDeveloper);
+                    }
+
                     _context.SaveChanges();
                 }
                 catch (Exception ex)
@@ -58,15 +75,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                     return RedirectToAction("Error", "Home");
                 }
             }
-  
-            return View();
+
+            return RedirectToAction("Index");
         }
 
         public IActionResult Details(int projectId)
         {
             Project? project = _context.Project
                 .Include(p => p.Ticket)
-                .Include(d => d.Developer)
+                .Include(u => u.User)
                 .FirstOrDefault(p => p.Id == projectId);
 
             if (project == null)
@@ -75,7 +92,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             }
 
             List<Ticket> tickets = project.Ticket.ToList();
-            List<ApplicationUser> developers = project.Developer.ToList();
+            List<ApplicationUser> developers = project.User.ToList();
 
             ProjectDetailsViewModel viewModel = new ProjectDetailsViewModel(project, tickets, developers);
 
