@@ -4,13 +4,7 @@
 
 <a asp-action="Create" asp-controller="Project">Create</a>
 
-<ul>
-    @foreach (Project project in Model)
-    {
-        <li>
-            @project.Name
-
-            <a asp-controller="Project" asp-action="Details" asp-route-projectId="@project.Id">Details</a>
-        </li>
-    }
-</ul>
+@foreach (Project project in Model)
+{
+    <h4>@project.Name</h4>
+}
