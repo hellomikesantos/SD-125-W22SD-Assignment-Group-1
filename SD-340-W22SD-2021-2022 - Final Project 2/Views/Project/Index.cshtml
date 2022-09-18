@@ -4,7 +4,23 @@
 
 <a asp-action="Create" asp-controller="Project">Create</a>
 
+<hr />
+
 @foreach (Project project in Model)
 {
     <h4>@project.Name</h4>
+    @if (project.Ticket.Count > 0)
+    {
+        <ul>
+            @foreach (Ticket ticket in project.Ticket)
+            {
+                <li>@ticket.Name | @ticket.Priority | @ticket.Hours</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div>No tasks created for this project</div>
+    }
+    <hr />
 }
