@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 
@@ -11,9 +12,10 @@ using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220918004748_RemoveProjectUser")]
+    partial class RemoveProjectUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("ApplicationUserProject", b =>
+                {
+                    b.Property<string>("DeveloperId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProjectsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DeveloperId", "ProjectsId");
+
+                    b.HasIndex("ProjectsId");
+
+                    b.ToTable("ApplicationUserProject");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -201,9 +218,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -224,8 +238,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("ProjectId");
-
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -241,13 +253,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProjectManagerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjectManagerId");
 
                     b.ToTable("Project");
                 });
@@ -281,6 +287,21 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("Ticket");
+                });
+
+            modelBuilder.Entity("ApplicationUserProject", b =>
+                {
+                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("DeveloperId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -334,24 +355,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", null)
-                        .WithMany("Developer")
-                        .HasForeignKey("ProjectId");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
-                {
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", "ProjectManager")
-                        .WithMany("Projects")
-                        .HasForeignKey("ProjectManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProjectManager");
-                });
-
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
                 {
                     b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", "Project")
@@ -363,15 +366,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Projects");
-                });
-
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
                 {
-                    b.Navigation("Developer");
-
                     b.Navigation("Ticket");
                 });
 #pragma warning restore 612, 618

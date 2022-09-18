@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
@@ -11,10 +12,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
     public class ProjectController : Controller
     {
         private ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProjectController(ApplicationDbContext context)
+        public ProjectController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -31,14 +35,30 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         [Authorize(Roles = "Project Manager")]
         [HttpPost]
-        public IActionResult Create(string name)
+        public async Task<IActionResult> Create(string name)
         {
-            Project project = new Project();
+            if (name != null)
+            {
+                try
+                {
+                    string userName = User.Identity.Name;
+                    ApplicationUser projectManager = await _userManager.FindByNameAsync(userName);
 
-            project.Name = name;
-            _context.Project.Add(project);
-            _context.SaveChanges();
+                    Project project = new Project();
 
+                    project.Name = name;
+                    project.ProjectManager = projectManager;
+                    project.ProjectManagerId = projectManager.Id;
+
+                    _context.Project.Add(project);
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToAction("Error", "Home");
+                }
+            }
+  
             return View();
         }
 
