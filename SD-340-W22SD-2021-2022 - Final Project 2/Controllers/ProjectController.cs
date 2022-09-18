@@ -46,7 +46,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         [Authorize(Roles = "Project Manager")]
         [HttpPost]
-        public async Task<IActionResult> Create(string name)
+        public async Task<IActionResult> Create(string name, string[] developer)
         {
             if (name != null)
             {
@@ -62,6 +62,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                     project.ProjectManagerId = projectManager.Id;
 
                     _context.Project.Add(project);
+                    
+                    //foreach(String dev in developer)
+                    //{
+                    //    ApplicationUser projectDeveloper = await _userManager.FindByIdAsync(dev);
+                    //    project.Developer.Add(projectDeveloper);
+                    //}
+
                     _context.SaveChanges();
                 }
                 catch (Exception ex)
@@ -69,8 +76,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                     return RedirectToAction("Error", "Home");
                 }
             }
-  
-            return View();
+
+            return RedirectToAction("Index");
         }
 
         public IActionResult Details(int projectId)
