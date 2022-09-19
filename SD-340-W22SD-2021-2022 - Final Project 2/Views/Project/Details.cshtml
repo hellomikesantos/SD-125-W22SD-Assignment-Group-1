@@ -44,6 +44,10 @@
                     <button type="submit">Mark it as not complete</button>
                 }
             </form>
+            <form asp-action="ChangeRequiredHours" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id">
+                <input type="number" name="hours" />
+                <button type="submit">Adjust Required Hours</button>
+            </form>
         </li>
     }
 </ul>

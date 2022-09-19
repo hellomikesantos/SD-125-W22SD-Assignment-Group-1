@@ -91,6 +91,32 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> ChangeRequiredHours(int projectId, int ticketId, int hours)
+        {
+            try
+            {
+                ApplicationUser currentUser = await _context.Users.Include(u => u.OwnedTickets).FirstAsync(u => u.UserName == User.Identity.Name);
+                Ticket ticket = await _context.Ticket.Include(t => t.TaskOwners).FirstAsync(t => t.Id == ticketId);
+
+                if (ticket.TaskOwners.FirstOrDefault(to => to.Id == currentUser.Id) == null)
+                {
+                    return Unauthorized("Only developers who are a task owner of this project can adjust required hours of a task");
+                }
+
+                ticket.Hours = hours;
+
+                _context.Ticket.Update(ticket);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Details", "Project", new { projectId = projectId });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddToWatchList(int projectId, int ticketId)
         {
             try
