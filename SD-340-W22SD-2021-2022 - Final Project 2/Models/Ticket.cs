@@ -29,7 +29,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Models
 
         [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
+
+        [InverseProperty("Tickets")]
+        public virtual ICollection<ApplicationUser> Developers { get; set; } = new HashSet<ApplicationUser>();
         //public virtual ICollection<Comment> Comment { get; set; } = new HashSet<Comment>();
-        //public virtual ICollection<ApplicationUser> Developer { get; set; } = new HashSet<ApplicationUser>();
     }
 }

@@ -1,0 +1,38 @@
+﻿@model SD_340_W22SD_2021_2022___Final_Project_2.Models.Project
+
+<form asp-action="Create" asp-controller="Ticket" asp-route-projectId="@Model.Id" method="post">
+    <label for="name"><h6>Name Task</h6></label>
+    <br />
+    <input name="name" type="text" />
+
+    <hr />
+
+    <label for="hours"><h6>Assign Required Hours</h6></label>
+    <br />
+    <input name="hours" type="number" />
+    
+    <hr />
+
+    <label for="priority"><h6>Set Priority</h6></label>
+    <br />
+    <select name="priority">
+        <option value="0">Low</option>
+        <option value="1">Medium</option>
+        <option value="2">High</option>
+    </select>
+
+    <hr />
+
+    <h6>Select Task Owner</h6>
+    @foreach (ApplicationUser developer in Model.Developers)
+    {
+        <div>
+            <input type="checkbox" id="developerIds" name="taskOwnerIds" value="@developer.Id">
+            <label for="taskOwnerIds">@developer.UserName</label>
+        </div>
+    }
+
+    <hr />
+
+    <button type="submit">Create Task</button>
+</form>
