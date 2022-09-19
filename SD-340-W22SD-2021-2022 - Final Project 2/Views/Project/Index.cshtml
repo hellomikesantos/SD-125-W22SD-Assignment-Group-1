@@ -9,6 +9,7 @@
 @foreach (Project project in Model)
 {
     <h4>@project.Name</h4>
+    <a asp-action="Create" asp-controller="Ticket" asp-route-projectId="@project.Id">Add Task</a>
     @if (project.Ticket.Count > 0)
     {
         <ul>
