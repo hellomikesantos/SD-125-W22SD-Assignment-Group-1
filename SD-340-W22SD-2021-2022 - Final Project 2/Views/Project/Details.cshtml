@@ -4,6 +4,7 @@
 
 <hr />
 
+<h6>Tasks</h6>
 <ul>
     @foreach (Ticket ticket in Model.Ticket)
     {
@@ -47,6 +48,7 @@
     }
 </ul>
 
+<h6>Assigned Developers</h6>
 <ul>
     @foreach (ApplicationUser developer in Model.Developers)
     {
