@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
+using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
@@ -29,6 +30,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         public async Task<IActionResult> Create()
         {
             List<ApplicationUser>? developers;
+            CreateProjectViewModel vm;
+            Project project = new Project();
 
             try
             {
@@ -39,7 +42,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            return View(developers);
+            vm = new CreateProjectViewModel(project, developers);
+
+            return View(vm);
         }
 
         [Authorize(Roles = "Project Manager")]
