@@ -15,7 +15,17 @@
         <ul>
             @foreach (Ticket ticket in project.Ticket)
             {
-                <li>@ticket.Name | @ticket.Priority | @ticket.Hours</li>
+                <li>
+                    @ticket.Name | @ticket.Priority | @ticket.Hours |
+                    @if(ticket.Completed)
+                    {
+                        <span>Completed</span>
+                    }
+                    else
+                    {
+                        <span>In Progress</span>
+                    }
+                </li>
             }
         </ul>
     }
