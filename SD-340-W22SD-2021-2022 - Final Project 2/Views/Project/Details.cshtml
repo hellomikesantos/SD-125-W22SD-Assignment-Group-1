@@ -1,11 +1,11 @@
-﻿@model SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels.ProjectDetailsViewModel
+﻿@model SD_340_W22SD_2021_2022___Final_Project_2.Models.Project
 
-<h1>@Model.Project.Name</h1>
+<h1>@Model.Name</h1>
 
 <hr />
 
 <ul>
-    @foreach (Ticket ticket in Model.Tickets)
+    @foreach (Ticket ticket in Model.Ticket)
     {
         <li>
             @ticket.Name - @ticket.Priority | @ticket.Hours |
@@ -17,7 +17,22 @@
             {
                 <span>Not Completed</span>
             }
-            <form asp-action="ToggleTicket" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Project.Id" asp-route-ticketId="@ticket.Id">
+
+            <form asp-action="AddToWatchList" asp-controller="Ticket" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id" method="post">
+                <button type="submit">
+                    @if (ticket.TaskWatchers.FirstOrDefault(tw => tw.UserName == User.Identity.Name) == null)
+                    {
+                        <span class="material-symbols-outlined">visibility</span>
+                        <span>Start Watching</span>
+                    }
+                    else
+                    {
+                        <span class="material-symbols-outlined">visibility_off</span>
+                        <span>Stop Watching</span>
+                    }
+                </button>
+            </form>
+            <form asp-action="ToggleTicket" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id">
                 @if (!ticket.Completed)
                 {
                     <button type="submit">Mark it as complete</button>

@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
-using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
-
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
@@ -78,7 +76,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         {
             Project? project = _context.Project
                 .Include(p => p.Ticket)
+                .ThenInclude(t => t.TaskWatchers)
                 .Include(u => u.Developers)
+                .ThenInclude(d => d.WatchedTickets)
                 .FirstOrDefault(p => p.Id == projectId);
 
             if (project == null)
@@ -89,9 +89,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             List<Ticket> tickets = project.Ticket.ToList();
             List<ApplicationUser> developers = project.Developers.ToList();
 
-            ProjectDetailsViewModel viewModel = new ProjectDetailsViewModel(project, tickets, developers);
-
-            return View(viewModel);
+            return View(project);
         }
     }
 }
