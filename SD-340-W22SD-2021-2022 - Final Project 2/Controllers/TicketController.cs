@@ -7,6 +7,7 @@ using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
+    [Authorize]
     public class TicketController : Controller
     {
         private ApplicationDbContext _context;
@@ -18,13 +19,11 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             _context = context;
             _userManager = userManager;
         }
-
         public IActionResult Index()
         {
             return View();
         }
 
-        [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> Create(int projectId)
         {
             Project? project = await _context.Project.Include(p => p.Developers).FirstOrDefaultAsync(p => p.Id == projectId);
@@ -37,8 +36,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             return View(project);
         }
 
+
         [HttpPost]
-        [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> Create(int projectId, string[] taskOwnerIds, string name = "Do it", int hours = 1, Priority priority = Priority.low)
         {
             if (taskOwnerIds.Count() == 0)
@@ -55,7 +54,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             foreach (String taskOwnerId in taskOwnerIds)
             {
                 ApplicationUser dev = await _userManager.FindByIdAsync(taskOwnerId);
-                ticket.Developers.Add(dev);
+                ticket.TaskOwners.Add(dev);
             }
 
 
@@ -63,6 +62,25 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Project");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleTicket(int projectId, int ticketId)
+        {
+            ApplicationUser? currentUser = await _context.Users.Include(u => u.OwnedTickets).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            Ticket? ticket = currentUser?.OwnedTickets.FirstOrDefault(t => t.Id == ticketId);
+
+            if (ticket == null)
+            {
+                return Unauthorized();
+            }
+
+            ticket.Completed = !ticket.Completed;
+
+            _context.Ticket.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "Project", new { projectId = projectId });
         }
     }
 }

@@ -14,7 +14,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Models
 
             List<string> roles = new List<string>
             {
-                "Admin", "Project Manager", "Developer", "Task Owner", "Task Watcher"
+                "Admin", "Project Manager", "Developer"
             };    
 
             foreach (string role in roles)

@@ -32,6 +32,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Models
 
         [InverseProperty("Tickets")]
         public virtual ICollection<ApplicationUser> Developers { get; set; } = new HashSet<ApplicationUser>();
+
+        [InverseProperty("OwnedTickets")]
+        public virtual ICollection<ApplicationUser> TaskOwners { get; set; } = new HashSet<ApplicationUser>();
+
+        [InverseProperty("WatchedTickets")]
+        public virtual ICollection<ApplicationUser> TaskWatchers { get; set; } = new HashSet<ApplicationUser>();
         //public virtual ICollection<Comment> Comment { get; set; } = new HashSet<Comment>();
     }
 }

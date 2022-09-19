@@ -2,25 +2,35 @@
 
 <h1>@Model.Project.Name</h1>
 
+<hr />
 
 <ul>
     @foreach (Ticket ticket in Model.Tickets)
     {
-        <li>@ticket.Name - @ticket.Priority | @ticket.Hours</li>
+        <li>
+            @ticket.Name - @ticket.Priority | @ticket.Hours |
+            @if (ticket.Completed)
+            {
+                <span>Completed</span>
+            }
+            else
+            {
+                <span>Not Completed</span>
+            }
+            <form asp-action="ToggleTicket" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Project.Id" asp-route-ticketId="@ticket.Id">
+                @if (!ticket.Completed)
+                {
+                    <button type="submit">Mark it as complete</button>
+
+                }
+                else
+                {
+                    <button type="submit">Mark it as not complete</button>
+                }
+            </form>
+        </li>
     }
 </ul>
-
-<form asp-action="Create" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Project.Id">
-    <input name="name" type="text" />
-    <input name="hours" type="number" />
-    <select name="priority">
-        <option value="0">Low</option>
-        <option value="1">Medium</option>
-        <option value="2">High</option>
-    </select>
-    <button type="submit">Create Task</button>
-</form>
-
 
 <ul>
     @foreach (ApplicationUser developer in Model.Developers)
