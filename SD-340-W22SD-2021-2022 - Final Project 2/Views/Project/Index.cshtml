@@ -8,7 +8,7 @@
 
 @foreach (Project project in Model)
 {
-    <h4>@project.Name</h4>
+    <a asp-action="Details" asp-controller="Project" asp-route-projectId="@project.Id"><h4>@project.Name</h4></a>
     <a asp-action="Create" asp-controller="Ticket" asp-route-projectId="@project.Id">Add Task</a>
     @if (project.Ticket.Count > 0)
     {
@@ -17,7 +17,7 @@
             {
                 <li>
                     @ticket.Name | @ticket.Priority | @ticket.Hours |
-                    @if(ticket.Completed)
+                    @if (ticket.Completed)
                     {
                         <span>Completed</span>
                     }
