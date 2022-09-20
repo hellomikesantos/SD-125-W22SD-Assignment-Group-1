@@ -17,8 +17,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Models
 
         public bool Completed { get; set; }
 
-        [Required]
-        [Range(5, 200)]
+        [Required(ErrorMessage = "Name is required.")]
+        [MinLength(5, ErrorMessage = "Name must be at least 5 characters long.")]
+        [MaxLength(200, ErrorMessage = "Name must be less than or equal to 200 characters.")]
         public string Name { get; set; }
 
         [Required]

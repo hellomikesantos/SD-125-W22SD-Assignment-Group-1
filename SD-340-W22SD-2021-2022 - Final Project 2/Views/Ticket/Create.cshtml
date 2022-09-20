@@ -1,15 +1,18 @@
-﻿@model SD_340_W22SD_2021_2022___Final_Project_2.Models.Project
+﻿@using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
 
-<form asp-action="Create" asp-controller="Ticket" asp-route-projectId="@Model.Id" method="post">
-    <label for="name"><h6>Name Task</h6></label>
-    <br />
-    <input name="name" type="text" />
+@model CreateTicketViewModel
 
+<h2>Create New Task for @Model.Project.Name</h2>
+<form asp-action="Create" asp-controller="Ticket" asp-route-projectId="@Model.Project.Id" method="post">
+    <label class="form-label" asp-for="Ticket.Name"></label>
+    <input class="form-text" asp-for="Ticket.Name" />
+    <div>
+        <span asp-validation-for="Ticket.Name" class="text-danger"></span>
+    </div>
     <hr />
 
-    <label for="hours"><h6>Assign Required Hours</h6></label>
-    <br />
-    <input name="hours" type="number" />
+    <label class="form-label" asp-for="Ticket.Hours"></label>
+    <input class="form-text" asp-for="Ticket.Hours" />
     
     <hr />
 
@@ -24,15 +27,17 @@
     <hr />
 
     <h6>Select Task Owner</h6>
+    <select name="taskOwnerIds">
     @foreach (ApplicationUser developer in Model.Developers)
     {
-        <div>
-            <input type="checkbox" id="developerIds" name="taskOwnerIds" value="@developer.Id">
-            <label for="taskOwnerIds">@developer.UserName</label>
-        </div>
+        <option value="@developer.Id">@developer.UserName</option>
     }
-
+    </select>
     <hr />
 
     <button type="submit">Create Task</button>
 </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

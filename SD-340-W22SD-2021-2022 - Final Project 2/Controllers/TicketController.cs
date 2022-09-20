@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
+using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
@@ -33,32 +34,46 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 return BadRequest();
             }
 
-            return View(project);
+            List<ApplicationUser>? developers = project.Developers.ToList();
+            CreateTicketViewModel vm;
+            Ticket ticket = new Ticket();
+
+            vm = new CreateTicketViewModel(project, ticket, developers);
+
+            return View(vm);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(int projectId, string[] taskOwnerIds, string name = "Do it", int hours = 1, Priority priority = Priority.low)
+        public async Task<IActionResult> Create(
+            [Bind("Id, Completed, Name, Hours, Priority, ProjectId, Project")] Ticket ticket,
+            int projectId, string[] taskOwnerIds, Priority priority = Priority.low)
         {
+            //This returns invalid because ModelState.Project is null
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("Create", new { projectId = projectId });
+            //}
+
             if (taskOwnerIds.Count() == 0)
             {
                 return RedirectToAction("Create", new { projectId = projectId });
             }
 
-            Ticket ticket = new Ticket();
-            ticket.ProjectId = projectId;
-            ticket.Name = name;
-            ticket.Hours = hours;
-            ticket.Priority = priority;
-            ticket.Completed = false;
+            Ticket newTicket = new Ticket();
+            newTicket.ProjectId = projectId;
+            newTicket.Name = ticket.Name;
+            newTicket.Hours = ticket.Hours;
+            newTicket.Priority = priority;
+            newTicket.Completed = false;
+
             foreach (String taskOwnerId in taskOwnerIds)
             {
                 ApplicationUser dev = await _userManager.FindByIdAsync(taskOwnerId);
-                ticket.TaskOwners.Add(dev);
+                newTicket.TaskOwners.Add(dev);
             }
 
-
-            await _context.Ticket.AddAsync(ticket);
+            await _context.Ticket.AddAsync(newTicket);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Project");
