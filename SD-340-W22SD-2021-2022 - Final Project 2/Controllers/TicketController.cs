@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
+using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
@@ -33,7 +34,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 return BadRequest();
             }
 
-            return View(project);
+            List<ApplicationUser>? developers = project.Developers.ToList();
+            CreateTicketViewModel vm;
+            Ticket ticket = new Ticket();
+
+            vm = new CreateTicketViewModel(projectId, ticket, developers);
+
+            return View(vm);
         }
 
 
