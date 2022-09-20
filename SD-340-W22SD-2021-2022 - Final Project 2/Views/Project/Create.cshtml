@@ -1,14 +1,18 @@
-﻿@model IEnumerable<ApplicationUser>
+﻿@using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
 
-<form asp-action="Create" asp-controller="Project" method="post">
-    <label for="name"><h6>Name Project</h6></label>
-    <br />
-    <input type="text" name="name" />
+@model CreateProjectViewModel;
 
+<h2>Create New Project</h2>
+<form class="form" asp-action="Create" asp-controller="Project" method="post">
+    <label class="form-label" asp-for="Project.Name"></label>
+    <input class="form-control" asp-for="Project.Name" />
+    <div>
+        <span asp-validation-for="Project.Name" class="text-danger"></span>
+    </div>
     <hr />
 
     <h6>Assign Developers</h6>
-    @foreach (ApplicationUser developer in Model)
+    @foreach (ApplicationUser developer in @Model.Developers)
     {
         <div>
             <input type="checkbox" id="developerIds" name="developerIds" value="@developer.Id">
@@ -20,3 +24,7 @@
 
     <button type="submit">Create Project</button>
 </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
