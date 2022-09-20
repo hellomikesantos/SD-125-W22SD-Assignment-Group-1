@@ -2,13 +2,13 @@
 {
     public class CreateTicketViewModel
     {
-        public int ProjectId { get; set; }
+        public Project Project { get; set; }
         public Ticket Ticket { get; set; }
         public List<ApplicationUser> Developers { get; set; } = new List<ApplicationUser>();
 
-        public CreateTicketViewModel(int projectId, Ticket ticket, List<ApplicationUser> developers)
+        public CreateTicketViewModel(Project project, Ticket ticket, List<ApplicationUser> developers)
         {
-            ProjectId = projectId;
+            Project = project;
             Ticket = ticket;
             Developers = developers;
         }
