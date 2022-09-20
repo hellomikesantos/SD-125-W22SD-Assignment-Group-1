@@ -49,17 +49,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         [Authorize(Roles = "Project Manager")]
         [HttpPost]
-        public async Task<IActionResult> Create(string name, string[] developerIds)
+        public async Task<IActionResult> Create([Bind("Id, Name, Ticket, Developers")] Project project, string[] developerIds)
         {
-            if (name == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("\"name\" query is missing");
+                return BadRequest();
             }
 
             try
             {
-                Project project = new Project();
-                project.Name = name;
                 foreach (String developerId in developerIds)
                 {
                     ApplicationUser dev = await _userManager.FindByIdAsync(developerId);
