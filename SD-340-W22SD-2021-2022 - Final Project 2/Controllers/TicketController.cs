@@ -38,7 +38,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             CreateTicketViewModel vm;
             Ticket ticket = new Ticket();
 
-            vm = new CreateTicketViewModel(projectId, ticket, developers);
+            vm = new CreateTicketViewModel(project, ticket, developers);
 
             return View(vm);
         }
