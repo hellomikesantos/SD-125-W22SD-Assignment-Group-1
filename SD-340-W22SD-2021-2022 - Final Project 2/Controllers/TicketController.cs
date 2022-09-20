@@ -25,6 +25,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> Create(int projectId)
         {
             Project? project = await _context.Project.Include(p => p.Developers).FirstOrDefaultAsync(p => p.Id == projectId);
@@ -43,8 +44,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             return View(vm);
         }
 
-
         [HttpPost]
+        [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> Create(
             [Bind("Id, Completed, Name, Hours, Priority, ProjectId, Project")] Ticket ticket,
             int projectId, string[] taskOwnerIds, Priority priority = Priority.low)
