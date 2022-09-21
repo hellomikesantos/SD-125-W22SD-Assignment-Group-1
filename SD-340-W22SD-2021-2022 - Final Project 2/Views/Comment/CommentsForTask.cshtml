@@ -1,3 +1,14 @@
-﻿@model IEnumerable<Comment>
+﻿@model ICollection<Comment>
 
 <h2>Welcome to the Comments</h2>
+
+@foreach (Comment comment in Model)
+{
+    <p>@comment.Content</p>
+}
+
+<form class="form" asp-action="Create" asp-controller="Comment" method="post">
+    <textarea name="content" rows="5" cols="50"></textarea>
+    <br />
+    <button type="submit">Add Comment</button>
+</form>

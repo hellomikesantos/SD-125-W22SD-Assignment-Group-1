@@ -15,7 +15,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         public async Task<IActionResult> CommentsForTask(int ticketId)
         {
-            List<Comment> comments;
+            List<Comment>? comments;
 
             try
             {
@@ -28,7 +28,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 return RedirectToAction("Index", "Project");
             }
 
-            return View();
+            return View(comments);
         }
     }
 }
