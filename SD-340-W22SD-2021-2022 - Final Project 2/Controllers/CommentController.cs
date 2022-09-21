@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
@@ -45,6 +46,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles="Developer")]
         public async Task<IActionResult> Create([Bind("Id, Content, TicketId, Ticket, UserId, User")] Comment NewComment)
         {
             Comment comment = new Comment();
