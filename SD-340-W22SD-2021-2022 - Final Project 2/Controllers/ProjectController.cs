@@ -20,6 +20,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "Project Manager, Developer")]
         public IActionResult Index()
         {
             List<Project> projects = _context.Project.Include(p => p.Ticket).OrderBy(p => p.Name).ToList();
