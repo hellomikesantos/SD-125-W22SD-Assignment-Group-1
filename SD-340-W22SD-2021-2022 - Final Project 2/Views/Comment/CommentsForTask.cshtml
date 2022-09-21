@@ -1,0 +1,28 @@
+﻿@using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels
+
+@model CreateCommentViewModel
+
+<h2>Comments</h2>
+
+<hr />
+
+@foreach (Comment comment in Model.Comments)
+{
+    <p><b>@comment.User.UserName:</b></p>
+    <p>@comment.Content</p>
+    <hr />
+}
+
+<form class="form" asp-action="Create" asp-controller="Comment" method="post">
+    <input type="hidden" name="NewComment.TicketId" value="@Model.NewComment.TicketId" />
+    <textarea asp-for="NewComment.Content" rows="5" cols="50"></textarea>
+    <div>
+        <span asp-validation-for="NewComment.Content" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit">Add Comment</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
