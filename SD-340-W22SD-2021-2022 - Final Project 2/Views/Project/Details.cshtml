@@ -19,6 +19,8 @@
                 <span>Not Completed</span>
             }
 
+            | <a asp-action="CommentsForTask" asp-controller="Comment" asp-route-ticketId="@ticket.Id">Comments</a>
+
             <form asp-action="AddToWatchList" asp-controller="Ticket" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id" method="post">
                 <button type="submit">
                     @if (ticket.TaskWatchers.FirstOrDefault(tw => tw.UserName == User.Identity.Name) == null)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 
@@ -11,9 +12,10 @@ using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220920014214_TicketNameIsNowMin5Max200")]
+    partial class TicketNameIsNowMin5Max200
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,35 +286,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TicketId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comment");
-                });
-
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -474,25 +447,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Comment", b =>
-                {
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", "Ticket")
-                        .WithMany("Comment")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ticket");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
                 {
                     b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", "Project")
@@ -504,19 +458,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
                 {
                     b.Navigation("Ticket");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
-                {
-                    b.Navigation("Comment");
                 });
 #pragma warning restore 612, 618
         }

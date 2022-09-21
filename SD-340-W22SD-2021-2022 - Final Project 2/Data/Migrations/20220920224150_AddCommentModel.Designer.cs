@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 
@@ -11,9 +12,10 @@ using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220920224150_AddCommentModel")]
+    partial class AddCommentModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,15 +302,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TicketId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Comment");
                 });
@@ -482,15 +478,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Ticket");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Ticket", b =>
@@ -502,11 +490,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("SD_340_W22SD_2021_2022___Final_Project_2.Models.Project", b =>
