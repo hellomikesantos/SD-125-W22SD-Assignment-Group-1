@@ -9,6 +9,7 @@
 }
 
 <form class="form" asp-action="Create" asp-controller="Comment" method="post">
+    <input type="hidden" name="ticketId" value="@ViewBag.ticketId" />
     <textarea name="content" rows="5" cols="50"></textarea>
     <br />
     <button type="submit">Add Comment</button>

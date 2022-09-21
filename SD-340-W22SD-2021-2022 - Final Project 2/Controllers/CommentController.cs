@@ -16,6 +16,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         public async Task<IActionResult> CommentsForTask(int ticketId)
         {
+            ViewBag.ticketId = ticketId;
+
             List<Comment>? comments;
 
             try
@@ -31,6 +33,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             }
 
             return View(comments);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(int ticketId, string content)
+        {
+            return View();
         }
     }
 }
