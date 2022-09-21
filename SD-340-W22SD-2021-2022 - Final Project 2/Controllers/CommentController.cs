@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
+using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
@@ -17,8 +18,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         public async Task<IActionResult> CommentsForTask(int ticketId)
         {
             ViewBag.ticketId = ticketId;
-
+            CreateCommentViewModel vm;
             List<Comment>? comments;
+            Comment newComment = new Comment();
 
             try
             {
@@ -32,7 +34,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 return RedirectToAction("Index", "Project");
             }
 
-            return View(comments);
+            vm = new CreateCommentViewModel(comments, newComment);
+
+            return View(vm);
         }
 
         [HttpPost]
