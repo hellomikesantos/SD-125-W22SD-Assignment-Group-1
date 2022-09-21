@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 
@@ -20,6 +21,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             try
             {
                 comments = _context.Comment
+                    .Include(u => u.User)
                     .Where(c => c.TicketId == ticketId)
                     .ToList();
             }

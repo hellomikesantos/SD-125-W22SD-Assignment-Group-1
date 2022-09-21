@@ -1,9 +1,10 @@
 ﻿@model ICollection<Comment>
 
-<h2>Welcome to the Comments</h2>
+<h2>Comments</h2>
 
 @foreach (Comment comment in Model)
 {
+    <p><b>@comment.User.UserName:</b></p>
     <p>@comment.Content</p>
 }
 
