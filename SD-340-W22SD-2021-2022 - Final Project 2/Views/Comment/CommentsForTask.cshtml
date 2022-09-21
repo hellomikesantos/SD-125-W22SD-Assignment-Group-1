@@ -10,12 +10,11 @@
 {
     <p><b>@comment.User.UserName:</b></p>
     <p>@comment.Content</p>
+    <hr />
 }
 
-<hr />
-
 <form class="form" asp-action="Create" asp-controller="Comment" method="post">
-    <input type="hidden" name="ticketId" value="@ViewBag.ticketId" />
+    <input type="hidden" name="NewComment.TicketId" value="@Model.NewComment.TicketId" />
     <textarea asp-for="NewComment.Content" rows="5" cols="50"></textarea>
     <div>
         <span asp-validation-for="NewComment.Content" class="text-danger"></span>
