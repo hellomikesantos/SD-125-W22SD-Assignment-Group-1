@@ -2,22 +2,27 @@
 
 <h1>List of Projects</h1>
 
-<a asp-action="Create" asp-controller="Project">Create</a>
+<a class="btn btn-primary" asp-action="Create" asp-controller="Project">Create</a>
 
 <hr />
 
-<form asp-action="Index" asp-controller="Project" asp-route-hours="asc">
-    <button type="submit">Order By Hours Ascending</button>
-</form>
-<form asp-action="Index" asp-controller="Project" asp-route-hours="desc">
-    <button type="submit">Order By Hours Descending</button>
-</form>
-<form asp-action="Index" asp-controller="Project" asp-route-priority="asc">
-    <button type="submit">Order By Priority Ascending</button>
-</form>
-<form asp-action="Index" asp-controller="Project" asp-route-priority="desc">
-    <button type="submit">Order By Priority Descending</button>
-</form>
+@*Bootstrap code comes from https://getbootstrap.com/docs/5.0/components/buttons/#block-buttons*@
+<div class="d-grid gap-2 d-md-block">
+    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-hours="asc">
+        Order By Hours Ascending
+    </a>
+    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-hours="desc">
+        Order By Hours Descending
+    </a>
+    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-priority="asc">
+        Order By Priority Ascending
+    </a>
+    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-priority="desc">
+        Order By Priority Descending
+    </a>
+</div>
+
+<hr />
 
 @foreach (Project project in Model)
 {
