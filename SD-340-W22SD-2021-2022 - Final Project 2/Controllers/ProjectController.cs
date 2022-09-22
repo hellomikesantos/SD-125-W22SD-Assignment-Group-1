@@ -21,9 +21,44 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         }
 
         [Authorize(Roles = "Project Manager, Developer")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Project> projects = _context.Project.Include(p => p.Ticket).OrderBy(p => p.Name).ToList();
+            List<Project>? projects = null;
+
+            try
+            {
+                ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+                List<string> roles = (List<String>)await _userManager.GetRolesAsync(user);
+                string role = roles.Find(r => r.Equals("Developer"));
+               
+                if (role == null)
+                {
+                    role = roles.Find(r => r.Equals("Project Manager"));
+                }
+
+                if (role.Equals("Developer"))
+                {
+                    projects = _context.Project
+                        .Include(p => p.Ticket)
+                        .Include(d => d.Developers)
+                        .Where(p => p.Developers.Any(p => p.Id.Equals(user.Id)))
+                        .OrderBy(p => p.Name).ToList();
+                }
+
+                if (role.Equals("Project Manager"))
+                {
+                    projects = _context.Project
+                        .Include(p => p.Ticket)
+                        .OrderBy(p => p.Name)
+                        .ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+       
             return View(projects);
         }
 
