@@ -6,6 +6,19 @@
 
 <hr />
 
+<form asp-action="Index" asp-controller="Project" asp-route-hours="asc">
+    <button type="submit">Order By Hours Ascending</button>
+</form>
+<form asp-action="Index" asp-controller="Project" asp-route-hours="desc">
+    <button type="submit">Order By Hours Descending</button>
+</form>
+<form asp-action="Index" asp-controller="Project" asp-route-priority="asc">
+    <button type="submit">Order By Priority Ascending</button>
+</form>
+<form asp-action="Index" asp-controller="Project" asp-route-priority="desc">
+    <button type="submit">Order By Priority Descending</button>
+</form>
+
 @foreach (Project project in Model)
 {
     <a asp-action="Details" asp-controller="Project" asp-route-projectId="@project.Id"><h4>@project.Name</h4></a>

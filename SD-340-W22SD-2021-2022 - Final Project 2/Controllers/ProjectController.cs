@@ -21,7 +21,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         }
 
         [Authorize(Roles = "Project Manager, Developer")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string hours, string priority)
         {
             List<Project>? projects = null;
 
@@ -30,7 +30,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
                 List<string> roles = (List<String>)await _userManager.GetRolesAsync(user);
                 string role = roles.Find(r => r.Equals("Developer"));
-               
+
                 if (role == null)
                 {
                     role = roles.Find(r => r.Equals("Project Manager"));
@@ -53,13 +53,41 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                         .ToList();
                 }
 
+                if (hours == "asc")
+                {
+                    projects.ForEach(p =>
+                    {
+                        p.Ticket = p.Ticket.OrderBy(t => t.Hours).ToList();
+                    });
+                }
+                else if (hours == "desc")
+                {
+                    projects.ForEach(p =>
+                    {
+                        p.Ticket = p.Ticket.OrderByDescending(t => t.Hours).ToList();
+                    });
+                }
+                else if (priority == "asc")
+                {
+                    projects.ForEach(p =>
+                    {
+                        p.Ticket = p.Ticket.OrderBy(t => t.Priority).ToList();
+                    });
+                }
+                else if (priority == "desc")
+                {
+                    projects.ForEach(p =>
+                    {
+                        p.Ticket = p.Ticket.OrderByDescending(t => t.Priority).ToList();
+                    });
+                }
+
+                return View(projects);
             }
             catch (Exception ex)
             {
                 return RedirectToAction("Index", "Home");
             }
-       
-            return View(projects);
         }
 
         [Authorize(Roles = "Project Manager")]
