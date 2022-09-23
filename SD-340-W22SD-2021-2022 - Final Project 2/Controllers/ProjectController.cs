@@ -21,7 +21,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         }
 
         [Authorize(Roles = "Project Manager, Developer")]
-        public async Task<IActionResult> Index(string hours, string priority)
+        public async Task<IActionResult> Index(string? hours, string? priority, bool? completed)
         {
             List<Project>? projects = null;
 
@@ -82,6 +82,20 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                     });
                 }
 
+                if(completed == true)
+                {
+                    projects.ForEach(p =>
+                    {
+                        p.Ticket = p.Ticket.Where(t => t.Completed == true).ToList();
+                    });
+                } else if (completed == false)
+                {
+                    projects.ForEach(p =>
+                    {
+                        p.Ticket = p.Ticket.Where(t => t.Completed == false).ToList();
+                    });
+                }
+               
                 return View(projects);
             }
             catch (Exception ex)

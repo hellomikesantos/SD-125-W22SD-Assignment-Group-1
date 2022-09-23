@@ -8,18 +8,30 @@
 
 @*Bootstrap code comes from https://getbootstrap.com/docs/5.0/components/buttons/#block-buttons*@
 <div class="d-grid gap-2 d-md-block">
-    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-hours="asc">
+    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-hours="asc" asp-route-completed="@Context.Request.Query["completed"]">
         Order By Hours Ascending
     </a>
-    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-hours="desc">
+    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-hours="desc" asp-route-completed="@Context.Request.Query["completed"]">
         Order By Hours Descending
     </a>
-    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-priority="asc">
+    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-priority="asc" asp-route-completed="@Context.Request.Query["completed"]">
         Order By Priority Ascending
     </a>
-    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-priority="desc">
+    <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-priority="desc" asp-route-completed="@Context.Request.Query["completed"]">
         Order By Priority Descending
     </a>
+    @if (Context.Request.Query["completed"] == "True")
+    {
+        <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-hours="@Context.Request.Query["hours"]" asp-route-priority="@Context.Request.Query["priority"]" asp-route-completed="@false">
+            Show Only Uncompleted
+        </a>
+    }
+    else
+    {
+        <a class="btn btn-primary btn-sm" asp-action="Index" asp-controller="Project" asp-route-hours="@Context.Request.Query["hours"]" asp-route-priority="@Context.Request.Query["priority"]" asp-route-completed="@true">
+            Show Only Completed
+        </a>
+    }
 </div>
 
 <hr />
