@@ -4,57 +4,59 @@
 
 <hr />
 
-<h6>Tasks</h6>
-<ul>
-    @foreach (Ticket ticket in Model.Ticket)
+<h4>Tasks</h4>
+
+@foreach (Ticket ticket in Model.Ticket)
+{
+    <h3>@ticket.Name</h3>
+    <div><b>Priority</b> @ticket.Priority </div>
+    <div><b>Required Hours</b> @ticket.Hours</div>
+    <div><b>Status</b>
+    @if (ticket.Completed)
     {
-        <li>
-            @ticket.Name - @ticket.Priority | @ticket.Hours |
-            @if (ticket.Completed)
+        <span>Completed</span>
+    }
+    else
+    {
+        <span>Not Completed</span>
+    }
+    </div>
+    <a asp-action="CommentsForTask" asp-controller="Comment" asp-route-ticketId="@ticket.Id">Comments</a>
+
+    <form class="project-form-button" asp-action="AddToWatchList" asp-controller="Ticket" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id" method="post">
+        <button type="submit">
+            @if (ticket.TaskWatchers.FirstOrDefault(tw => tw.UserName == User.Identity.Name) == null)
             {
-                <span>Completed</span>
+                <span class="material-symbols-outlined">visibility</span>
+                <span>Start Watching</span>
             }
             else
             {
-                <span>Not Completed</span>
+                <span class="material-symbols-outlined">visibility_off</span>
+                <span>Stop Watching</span>
             }
+        </button>
+    </form>
+    <form class="project-form-button" asp-action="ToggleTicket" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id">
+        @if (!ticket.Completed)
+        {
+            <button type="submit">Mark it as complete</button>
 
-            | <a asp-action="CommentsForTask" asp-controller="Comment" asp-route-ticketId="@ticket.Id">Comments</a>
+        }
+        else
+        {
+            <button type="submit">Mark it as not complete</button>
+        }
+    </form>
+    <form class="project-form-button" asp-action="ChangeRequiredHours" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id">
+        <input type="number" name="hours" />
+        <button type="submit">Adjust Required Hours</button>
+    </form>
+    <hr />
+}
 
-            <form asp-action="AddToWatchList" asp-controller="Ticket" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id" method="post">
-                <button type="submit">
-                    @if (ticket.TaskWatchers.FirstOrDefault(tw => tw.UserName == User.Identity.Name) == null)
-                    {
-                        <span class="material-symbols-outlined">visibility</span>
-                        <span>Start Watching</span>
-                    }
-                    else
-                    {
-                        <span class="material-symbols-outlined">visibility_off</span>
-                        <span>Stop Watching</span>
-                    }
-                </button>
-            </form>
-            <form asp-action="ToggleTicket" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id">
-                @if (!ticket.Completed)
-                {
-                    <button type="submit">Mark it as complete</button>
 
-                }
-                else
-                {
-                    <button type="submit">Mark it as not complete</button>
-                }
-            </form>
-            <form asp-action="ChangeRequiredHours" asp-controller="Ticket" method="post" asp-route-projectId="@Model.Id" asp-route-ticketId="@ticket.Id">
-                <input type="number" name="hours" />
-                <button type="submit">Adjust Required Hours</button>
-            </form>
-        </li>
-    }
-</ul>
-
-<h6>Assigned Developers</h6>
+<h2>Assigned Developers</h2>
 <ul>
     @foreach (ApplicationUser developer in Model.Developers)
     {
