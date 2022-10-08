@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
+using SD_340_W22SD_2021_2022___Final_Project_2.BLL;
+using SD_340_W22SD_2021_2022___Final_Project_2.DAL;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
@@ -13,11 +15,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         private ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        //Added business logic below here.
+        private readonly ProjectBusinessLogic projectBL;
+
         public ProjectController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            projectBL = new ProjectBusinessLogic(new ProjectRepository(context), _userManager);
         }
 
         [Authorize(Roles = "Project Manager, Developer")]
@@ -38,21 +44,25 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
                 if (role.Equals("Developer"))
                 {
-                    projects = _context.Project
-                        .Include(p => p.Ticket)
-                        .Include(d => d.Developers)
-                        .Where(p => p.Developers.Any(p => p.Id.Equals(user.Id)))
-                        .OrderBy(p => p.Name).ToList();
+                    //    projects = _context.Project
+                    //        .Include(p => p.Ticket)
+                    //        .Include(d => d.Developers)
+                    //        .Where(p => p.Developers.Any(p => p.Id.Equals(user.Id)))
+                    //        .OrderBy(p => p.Name).ToList();
+                    projects = await projectBL.GetAllProjectsByDeveloperAsync(user.Id);
                 }
 
                 if (role.Equals("Project Manager"))
                 {
-                    projects = _context.Project
-                        .Include(p => p.Ticket)
-                        .OrderBy(p => p.Name)
-                        .ToList();
+                    //projects = _context.Project
+                    //    .Include(p => p.Ticket)
+                    //    .OrderBy(p => p.Name)
+                    //    .ToList();
+
+                    projects = projectBL.GetAllProjects();
                 }
 
+                //No Database call start here
                 if (hours == "asc")
                 {
                     projects.ForEach(p =>
@@ -81,17 +91,20 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                         p.Ticket = p.Ticket.OrderByDescending(t => t.Priority).ToList();
                     });
                 }
+                //No Database call ends here
 
-                if(completed == true)
+                if (completed == true)
                 {
                     projects.ForEach(p =>
                     {
+                        //Michael Ticket GetCompletedTickets BL
                         p.Ticket = p.Ticket.Where(t => t.Completed == true).ToList();
                     });
                 } else if (completed == false)
                 {
                     projects.ForEach(p =>
                     {
+                        //Michael Ticket GetIncompletedTicketList BL
                         p.Ticket = p.Ticket.Where(t => t.Completed == false).ToList();
                     });
                 }
@@ -113,6 +126,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
             try
             {
+                //User Business logic get users by role dev
                 developers = (List<ApplicationUser>?)await _userManager.GetUsersInRoleAsync("Developer");
             }
             catch (Exception ex)
@@ -138,12 +152,16 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             {
                 foreach (String developerId in developerIds)
                 {
+                    //User Business Logic. Get developer by id
                     ApplicationUser dev = await _userManager.FindByIdAsync(developerId);
                     project.Developers.Add(dev);
                 }
 
-                _context.Project.Add(project);
-                _context.SaveChanges();
+                
+                //_context.Project.Add(project);
+                projectBL.CreateProject(project);
+
+                //_context.SaveChanges();
 
                 return RedirectToAction("Index");
             }
@@ -155,19 +173,22 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         public IActionResult Details(int projectId)
         {
-            Project? project = _context.Project
-                .Include(p => p.Ticket)
-                .ThenInclude(t => t.TaskWatchers)
-                .Include(u => u.Developers)
-                .ThenInclude(d => d.WatchedTickets)
-                .FirstOrDefault(p => p.Id == projectId);
+            //Project? project = _context.Project
+            //    .Include(p => p.Ticket)
+            //    .ThenInclude(t => t.TaskWatchers)
+            //    .Include(u => u.Developers)
+            //    .ThenInclude(d => d.WatchedTickets)
+            //    .FirstOrDefault(p => p.Id == projectId);
+
+            Project project = projectBL.GetProjectDetails(projectId);
 
             if (project == null)
             {
                 return NotFound();
             }
-
+            //Ticket BL is needed here
             List<Ticket> tickets = project.Ticket.ToList();
+            //User BL is needed here
             List<ApplicationUser> developers = project.Developers.ToList();
 
             return View(project);

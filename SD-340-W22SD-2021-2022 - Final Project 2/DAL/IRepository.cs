@@ -2,8 +2,8 @@
 {
     public interface IRepository<T> where T : class
     {
-        //Add
-        void Add(T entity);
+        //Create
+        void Create(T entity);
         //Read
         T Get(int id);
         T Get(Func<T, bool> predicate);
