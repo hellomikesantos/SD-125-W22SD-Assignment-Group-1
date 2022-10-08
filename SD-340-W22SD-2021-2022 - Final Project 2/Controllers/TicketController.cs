@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SD_340_W22SD_2021_2022___Final_Project_2.BLL;
+using SD_340_W22SD_2021_2022___Final_Project_2.DAL;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
@@ -14,11 +16,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         private ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        private readonly TicketBusinessLogic ticketBL;
 
         public TicketController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            ticketBL = new TicketBusinessLogic(new TicketRepository(context), _userManager);
         }
         public IActionResult Index()
         {
@@ -70,12 +74,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
             foreach (String taskOwnerId in taskOwnerIds)
             {
+                //User business logic
                 ApplicationUser dev = await _userManager.FindByIdAsync(taskOwnerId);
                 newTicket.TaskOwners.Add(dev);
             }
 
-            await _context.Ticket.AddAsync(newTicket);
-            await _context.SaveChangesAsync();
+
+            //await _context.Ticket.AddAsync(newTicket);
+            //await _context.SaveChangesAsync();
+            
 
             return RedirectToAction("Index", "Project");
         }
