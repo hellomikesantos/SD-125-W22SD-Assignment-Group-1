@@ -47,6 +47,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         {
             List<Ticket> tickets = repo.GetList(ticket => ticket.Completed).ToList();
             Ticket ticket = tickets.First(ticket => ticket.Id == ticketId);
+            repo.Save();
             return repo.Update(ticket);
         }
 
@@ -55,6 +56,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
             List<Ticket> tickets = repo.GetAll().ToList();
             Ticket ticket = tickets.First(ticket => ticket.Id == ticketId);
             ticket.Hours = hours;
+            repo.Save();
             return repo.Update(ticket);
         }
 
@@ -64,6 +66,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
             ApplicationUser currUser = await _userManager.FindByNameAsync(Thread.CurrentThread.Name);
             Ticket ticket = repo.Get(ticketId);
             ticket.TaskWatchers.Add(currUser);
+            repo.Save();
             return repo.Update(ticket);
         }
 
@@ -73,6 +76,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
             ApplicationUser currUser = await _userManager.FindByNameAsync(Thread.CurrentThread.Name);
             Ticket ticket = repo.Get(ticketId);
             ticket.TaskWatchers.Remove(currUser);
+            repo.Save();
             return repo.Update(ticket);
         }
 
