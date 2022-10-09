@@ -23,7 +23,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
 
         public Ticket Get(int id)
         {
-            throw new NotImplementedException();
+            return _db.Ticket.Find(id);
         }
 
         public Ticket Get(Func<Ticket, bool> predicate)
