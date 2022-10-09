@@ -66,14 +66,14 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
             repo.Save();
         }
 
-        public async void UpdateTicketAddWatcher(Ticket entity, ApplicationUser user)
+        public void UpdateTicketAddWatcher(Ticket entity, ApplicationUser user)
         {
             entity.TaskWatchers.Add(user);
             repo.Update(entity);
             repo.Save();
         }
 
-        public async void UpdateTicketRemoveWatcher(Ticket entity, ApplicationUser user)
+        public void UpdateTicketRemoveWatcher(Ticket entity, ApplicationUser user)
         {
 
             entity.TaskWatchers.Remove(user);
