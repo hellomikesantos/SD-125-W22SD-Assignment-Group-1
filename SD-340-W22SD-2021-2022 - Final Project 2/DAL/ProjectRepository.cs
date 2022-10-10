@@ -1,4 +1,5 @@
-﻿using SD_340_W22SD_2021_2022___Final_Project_2.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
@@ -23,22 +24,22 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
 
         public Project Get(int id)
         {
-            return _db.Project.Find(id);
+            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).First(proj => proj.Id == id);
         }
 
         public Project Get(Func<Project, bool> predicate)
         {
-            return _db.Project.First(predicate);
+            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).First(predicate);
         }
 
         public ICollection<Project> GetAll()
         {
-            return _db.Project.ToList();
+            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).ToList();
         }
 
         public ICollection<Project> GetList(Func<Project, bool> predicate)
         {
-            return _db.Project.Where(predicate).ToList();
+            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).Where(predicate).ToList();
         }
 
         public void Save()

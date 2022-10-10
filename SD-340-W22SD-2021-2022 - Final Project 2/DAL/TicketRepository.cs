@@ -1,4 +1,5 @@
-﻿using SD_340_W22SD_2021_2022___Final_Project_2.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
@@ -33,12 +34,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
 
         public ICollection<Ticket> GetAll()
         {
-            return _db.Ticket.ToList();
+            return _db.Ticket.Include(ticket => ticket.Comment).ToList();
         }
 
         public ICollection<Ticket> GetList(Func<Ticket, bool> predicate)
         {
-            return _db.Ticket.Where(predicate).ToList();
+            return _db.Ticket.Include(ticket => ticket.Comment).Where(predicate).ToList();
         }
 
         public void Save()
