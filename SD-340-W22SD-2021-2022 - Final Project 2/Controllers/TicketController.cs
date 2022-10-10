@@ -18,6 +18,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         private readonly TicketBusinessLogic ticketBL;
         private readonly ProjectBusinessLogic projectBL;
+        private readonly UserBusinessLogic userBL;
 
         public TicketController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -25,6 +26,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             _userManager = userManager;
             ticketBL = new TicketBusinessLogic(new TicketRepository(context), _userManager);
             projectBL = new ProjectBusinessLogic(new ProjectRepository(context), _userManager);
+            userBL = new UserBusinessLogic(_userManager);
         }
         public IActionResult Index()
         {
@@ -44,7 +46,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 return BadRequest();
             }
 
-            // add users business logic
+            // add users business logic or do not refactor
             List<ApplicationUser>? developers = project.Developers.ToList();
             CreateTicketViewModel vm;
             Ticket ticket = new Ticket();
@@ -82,7 +84,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             foreach (String taskOwnerId in taskOwnerIds)
             {
                 //User business logic
-                ApplicationUser dev = await _userManager.FindByIdAsync(taskOwnerId);
+                ApplicationUser dev = userBL.GetUserByUserId(taskOwnerId);
                 newTicket.TaskOwners.Add(dev);
             }
 
@@ -101,7 +103,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             try
             {
                 // user businesss logic
-                ApplicationUser currentUser = await _context.Users.Include(u => u.OwnedTickets).FirstAsync(u => u.UserName == User.Identity.Name);
+                //ApplicationUser currentUser = await _context.Users.Include(u => u.OwnedTickets).FirstAsync(u => u.UserName == User.Identity.Name);
+                ApplicationUser currentUser = await userBL.GetCurrentUserByNameAsync(User.Identity.Name);
 
                 // get ticket BL
                 //Ticket ticket = await _context.Ticket.Include(t => t.TaskOwners).FirstAsync(t => t.Id == ticketId);
@@ -132,7 +135,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             try
             {
                 // user BL
-                ApplicationUser currentUser = await _context.Users.Include(u => u.OwnedTickets).FirstAsync(u => u.UserName == User.Identity.Name);
+                ApplicationUser currentUser = await userBL.GetCurrentUserByNameAsync(User.Identity.Name);
                 // Refactored to Ticket BL
                 //Ticket ticket = await _context.Ticket.Include(t => t.TaskOwners).FirstAsync(t => t.Id == ticketId);
                 Ticket ticket = ticketBL.GetTicket(ticketId);
@@ -163,8 +166,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             try
             {
                 // user BL
-                ApplicationUser currentUser = await _context.Users.FirstAsync(u => u.UserName == User.Identity.Name);
-                //Refactor to call BL
+                ApplicationUser currentUser = await userBL.GetCurrentUserByNameAsync(User.Identity.Name);                //Refactor to call BL
                 //Project project = await _context.Project.Include(p => p.Developers).FirstAsync(p => p.Id == projectId);
                 //Ticket ticket = await _context.Ticket.Include(t => t.TaskWatchers).FirstAsync(t => t.Id == ticketId);
                 Project project = projectBL.GetProjectDetails(projectId);

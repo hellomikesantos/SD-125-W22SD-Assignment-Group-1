@@ -17,6 +17,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         //Added business logic below here.
         private readonly ProjectBusinessLogic projectBL;
+        private readonly UserBusinessLogic userBL;
 
         public ProjectController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
@@ -24,6 +25,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             _context = context;
             _userManager = userManager;
             projectBL = new ProjectBusinessLogic(new ProjectRepository(context), _userManager);
+            userBL = new UserBusinessLogic(_userManager);
         }
 
         [Authorize(Roles = "Project Manager, Developer")]
@@ -33,8 +35,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
             try
             {
-                ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
-                List<string> roles = (List<String>)await _userManager.GetRolesAsync(user);
+                ApplicationUser user = await userBL.GetCurrentUserByNameAsync(User.Identity.Name);
+                //List<string> roles = (List<String>)await _userManager.GetRolesAsync(user);
+                List<string> roles = await userBL.GetUserRoles(user);
                 string role = roles.Find(r => r.Equals("Developer"));
 
                 if (role == null)
@@ -127,7 +130,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             try
             {
                 //User Business logic get users by role dev
-                developers = (List<ApplicationUser>?)await _userManager.GetUsersInRoleAsync("Developer");
+                //developers = (List<ApplicationUser>?)await _userManager.GetUsersInRoleAsync("Developer");
+                developers = await userBL.GetAllUsersWithSpecificRoleAsync("Developer");
             }
             catch (Exception ex)
             {
@@ -153,7 +157,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 foreach (String developerId in developerIds)
                 {
                     //User Business Logic. Get developer by id
-                    ApplicationUser dev = await _userManager.FindByIdAsync(developerId);
+                    //ApplicationUser dev = await _userManager.FindByIdAsync(developerId);
+                    ApplicationUser dev = userBL.GetUserByUserId(developerId);
+                    //Check this if it should be on project BL
                     project.Developers.Add(dev);
                 }
 
@@ -186,6 +192,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             {
                 return NotFound();
             }
+
+            //This should be refactored or not?
             //Ticket BL is needed here
             List<Ticket> tickets = project.Ticket.ToList();
             //User BL is needed here
