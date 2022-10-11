@@ -53,7 +53,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
 
         public async Task<ApplicationUser> GetCurrentUserByNameAsync(string identity)
         {
-            return await _userManager.FindByNameAsync(identity);
+            ApplicationUser currUser = await _userManager.Users.Include(user => user.OwnedTickets).Include(user => user.WatchedTickets).Include(user => user.Tickets).Include(user => user.Projects).FirstAsync(user => user.UserName == identity);
+            return currUser;
         }
 
     }

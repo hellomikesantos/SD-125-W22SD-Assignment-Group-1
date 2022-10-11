@@ -65,7 +65,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                     projects = projectBL.GetAllProjects();
                 }
 
-                //No Database call start here
+                //No Database call start here. Abstract into helper method for unit testing.
                 if (hours == "asc")
                 {
                     projects.ForEach(p =>

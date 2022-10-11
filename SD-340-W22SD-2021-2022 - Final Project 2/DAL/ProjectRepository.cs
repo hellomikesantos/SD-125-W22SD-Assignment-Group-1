@@ -24,12 +24,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
 
         public Project Get(int id)
         {
-            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).First(proj => proj.Id == id);
+            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).ThenInclude(ticket => ticket.TaskWatchers).First(proj => proj.Id == id);
         }
 
         public Project Get(Func<Project, bool> predicate)
         {
-            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).First(predicate);
+            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).ThenInclude(ticket => ticket.TaskWatchers).First(predicate);
         }
 
         public ICollection<Project> GetAll()
@@ -39,7 +39,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
 
         public ICollection<Project> GetList(Func<Project, bool> predicate)
         {
-            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).Where(predicate).ToList();
+            return _db.Project.Include(proj => proj.Developers).Include(proj => proj.Ticket).ThenInclude(ticket => ticket.TaskWatchers).Where(predicate).ToList();
         }
 
         public void Save()

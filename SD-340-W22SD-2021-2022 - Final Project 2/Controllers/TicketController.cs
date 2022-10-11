@@ -166,11 +166,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             try
             {
                 // user BL
-                ApplicationUser currentUser = await userBL.GetCurrentUserByNameAsync(User.Identity.Name);                //Refactor to call BL
-                //Project project = await _context.Project.Include(p => p.Developers).FirstAsync(p => p.Id == projectId);
-                //Ticket ticket = await _context.Ticket.Include(t => t.TaskWatchers).FirstAsync(t => t.Id == ticketId);
-                Project project = projectBL.GetProjectDetails(projectId);
-                Ticket ticket = ticketBL.GetTicket(ticketId);
+                ApplicationUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+                //Refactor to call BL
+                Project project = await _context.Project.Include(p => p.Developers).FirstAsync(p => p.Id == projectId);
+                Ticket ticket = await _context.Ticket.Include(t => t.TaskWatchers).FirstAsync(t => t.Id == ticketId);
+                //Project project = projectBL.GetProjectDetails(projectId);
+                //Ticket ticket = ticketBL.GetTicket(ticketId);
 
                 if (project.Developers.FirstOrDefault(d => d.Id == currentUser.Id) == null)
                 {
