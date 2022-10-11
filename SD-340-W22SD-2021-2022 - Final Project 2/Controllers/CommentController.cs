@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SD_340_W22SD_2021_2022___Final_Project_2.BLL;
+using SD_340_W22SD_2021_2022___Final_Project_2.DAL;
 using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models.ViewModels;
@@ -13,11 +15,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         private ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        private readonly CommentBusinessLogic commentBL;
         public CommentController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            commentBL = new CommentBusinessLogic(new CommentRepository(context), _userManager);
         }
 
         public async Task<IActionResult> CommentsForTask(int ticketId)
@@ -26,13 +30,14 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             CreateCommentViewModel vm;
             List<Comment>? comments;
             Comment newComment = new Comment();
-
+                
             try
             {
-                comments = _context.Comment
-                    .Include(u => u.User)
-                    .Where(c => c.TicketId == ticketId)
-                    .ToList();
+                //comments = _context.Comment
+                //    .Include(u => u.User)
+                //    .Where(c => c.TicketId == ticketId)
+                //    .ToList();
+                comments = commentBL.GetAllCommentsByTask(ticketId);
             }
             catch (Exception ex)
             {
@@ -96,8 +101,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 comment.User = user;
                 comment.UserId = user.Id;
 
-                _context.Comment.Add(comment);
-                await _context.SaveChangesAsync();
+                //_context.Comment.Add(comment);
+                //await _context.SaveChangesAsync();
+                commentBL.CreateComment(comment);
             }
             catch (Exception ex)
             {
