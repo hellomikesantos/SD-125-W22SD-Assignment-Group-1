@@ -30,13 +30,14 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             CreateCommentViewModel vm;
             List<Comment>? comments;
             Comment newComment = new Comment();
-
+                
             try
             {
-                comments = _context.Comment
-                    .Include(u => u.User)
-                    .Where(c => c.TicketId == ticketId)
-                    .ToList();
+                //comments = _context.Comment
+                //    .Include(u => u.User)
+                //    .Where(c => c.TicketId == ticketId)
+                //    .ToList();
+                comments = commentBL.GetAllCommentsByTask(ticketId);
             }
             catch (Exception ex)
             {
@@ -100,8 +101,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 comment.User = user;
                 comment.UserId = user.Id;
 
-                _context.Comment.Add(comment);
-                await _context.SaveChangesAsync();
+                //_context.Comment.Add(comment);
+                //await _context.SaveChangesAsync();
+                commentBL.CreateComment(comment);
             }
             catch (Exception ex)
             {

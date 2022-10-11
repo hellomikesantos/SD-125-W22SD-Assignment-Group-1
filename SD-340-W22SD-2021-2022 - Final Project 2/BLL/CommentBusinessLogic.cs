@@ -13,5 +13,16 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
             this.repo = repo;
             _userManager = userManager;
         }
+
+        public List<Comment> GetAllCommentsByTask(int ticketId)
+        {
+            return repo.GetList(comment => comment.TicketId == ticketId).ToList();
+        }
+
+        public void CreateComment(Comment entity)
+        {
+            repo.Create(entity);
+            repo.Save();
+        }
     }
 }

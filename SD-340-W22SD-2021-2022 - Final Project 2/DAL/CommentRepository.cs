@@ -1,4 +1,5 @@
-﻿using SD_340_W22SD_2021_2022___Final_Project_2.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SD_340_W22SD_2021_2022___Final_Project_2.Data;
 using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 
 namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
@@ -10,9 +11,10 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
         {
             _db = db;
         }
-        public void Add(Comment entity)
+        public void Create(Comment entity)
         {
-            throw new NotImplementedException();
+            _db.Comment.Add(entity);
+            _db.SaveChanges();
         }
 
         public void Delete(Comment entity)
@@ -37,7 +39,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
 
         public ICollection<Comment> GetList(Func<Comment, bool> predicate)
         {
-            throw new NotImplementedException();
+            return _db.Comment.Include(comment => comment.User).Where(predicate).ToList();
         }
 
         public void Save()
