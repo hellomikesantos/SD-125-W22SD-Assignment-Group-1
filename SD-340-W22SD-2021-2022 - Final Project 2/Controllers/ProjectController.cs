@@ -12,20 +12,17 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 {
     public class ProjectController : Controller
     {
-        private ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
-        //Added business logic below here.
         private readonly ProjectBusinessLogic projectBL;
         private readonly UserBusinessLogic userBL;
-
+        private readonly TicketBusinessLogic ticketBL;
         public ProjectController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
-            _context = context;
             _userManager = userManager;
             projectBL = new ProjectBusinessLogic(new ProjectRepository(context), _userManager);
             userBL = new UserBusinessLogic(_userManager);
+            ticketBL = new TicketBusinessLogic(new TicketRepository(context), _userManager);
         }
 
         [Authorize(Roles = "Project Manager, Developer")]
@@ -36,36 +33,23 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             try
             {
                 ApplicationUser user = await userBL.GetCurrentUserByNameAsync(User.Identity.Name);
-                //List<string> roles = (List<String>)await _userManager.GetRolesAsync(user);
                 List<string> roles = await userBL.GetUserRoles(user);
                 string role = roles.Find(r => r.Equals("Developer"));
-
                 if (role == null)
                 {
                     role = roles.Find(r => r.Equals("Project Manager"));
                 }
-
                 if (role.Equals("Developer"))
                 {
-                    //    projects = _context.Project
-                    //        .Include(p => p.Ticket)
-                    //        .Include(d => d.Developers)
-                    //        .Where(p => p.Developers.Any(p => p.Id.Equals(user.Id)))
-                    //        .OrderBy(p => p.Name).ToList();
                     projects = await projectBL.GetAllProjectsByDeveloperAsync(user.Id);
                 }
 
                 if (role.Equals("Project Manager"))
                 {
-                    //projects = _context.Project
-                    //    .Include(p => p.Ticket)
-                    //    .OrderBy(p => p.Name)
-                    //    .ToList();
-
                     projects = projectBL.GetAllProjects();
                 }
 
-                //No Database call start here. Abstract into helper method for unit testing.
+                //Abstract into helper method for unit testing.
                 if (hours == "asc")
                 {
                     projects.ForEach(p =>
@@ -100,15 +84,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
                 {
                     projects.ForEach(p =>
                     {
-                        //Michael Ticket GetCompletedTickets BL
-                        p.Ticket = p.Ticket.Where(t => t.Completed == true).ToList();
+                        p.Ticket = ticketBL.GetCompletedTickets(p.Id);
                     });
                 } else if (completed == false)
                 {
                     projects.ForEach(p =>
                     {
-                        //Michael Ticket GetIncompletedTicketList BL
-                        p.Ticket = p.Ticket.Where(t => t.Completed == false).ToList();
+                        p.Ticket = ticketBL.GetUncompletedTickets(p.Id);
                     });
                 }
                

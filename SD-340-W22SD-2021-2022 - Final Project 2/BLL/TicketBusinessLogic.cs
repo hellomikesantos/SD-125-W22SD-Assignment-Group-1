@@ -34,25 +34,17 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
             return repo.GetList(ticket => ticket.ProjectId == projectId).ToList();
         }
 
-        // Needs project repo
         public List<Ticket> GetCompletedTickets(int projectid)
         {
             List<Ticket> ticketsInProj = repo.GetList(project => project.ProjectId == projectid).ToList();
             return ticketsInProj.Where(ticket => ticket.Completed == true).ToList();
         }
 
-        //public void UpdateTicketToComplete(Ticket entity)
-        //{
-        //    repo.Update(entity);
-        //    repo.Save();
-        //}
-
-        //public void UpdateTicketToIncomplete(Ticket entity)
-        //{
-        //    repo.Update(entity);
-        //    repo.Save();
-        //}
-
+        public List<Ticket> GetUncompletedTickets(int projectid)
+        {
+            List<Ticket> ticketsInProj = repo.GetList(project => project.ProjectId == projectid).ToList();
+            return ticketsInProj.Where(ticket => ticket.Completed == false).ToList();
+        }
         public void UpdateTicketStatus(Ticket entity)
         {
             entity.Completed = !entity.Completed;

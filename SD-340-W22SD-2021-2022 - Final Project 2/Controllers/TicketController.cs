@@ -13,16 +13,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
     [Authorize]
     public class TicketController : Controller
     {
-        private ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
         private readonly TicketBusinessLogic ticketBL;
         private readonly ProjectBusinessLogic projectBL;
         private readonly UserBusinessLogic userBL;
 
         public TicketController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
             _userManager = userManager;
             ticketBL = new TicketBusinessLogic(new TicketRepository(context), _userManager);
             projectBL = new ProjectBusinessLogic(new ProjectRepository(context), _userManager);
@@ -36,23 +33,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         [Authorize(Roles = "Project Manager")]
         public async Task<IActionResult> Create(int projectId)
         {
-            // refactored to project business logic
-            //Project? project = await _context.Project.Include(p => p.Developers).FirstOrDefaultAsync(p => p.Id == projectId);
             Project? project = projectBL.GetProjectDetails(projectId);
-
-
             if (project == null)
             {
                 return BadRequest();
             }
-
-            // add users business logic or do not refactor
             List<ApplicationUser>? developers = project.Developers.ToList();
             CreateTicketViewModel vm;
             Ticket ticket = new Ticket();
-
             vm = new CreateTicketViewModel(project, ticket, developers);
-
             return View(vm);
         }
 
@@ -165,14 +154,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         {
             try
             {
-                // user BL
                 ApplicationUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-                //Refactor to call BL
-                Project project = await _context.Project.Include(p => p.Developers).FirstAsync(p => p.Id == projectId);
-                Ticket ticket = await _context.Ticket.Include(t => t.TaskWatchers).FirstAsync(t => t.Id == ticketId);
-                //Project project = projectBL.GetProjectDetails(projectId);
-                //Ticket ticket = ticketBL.GetTicket(ticketId);
-
+                Project project = projectBL.GetProjectDetails(projectId);
+                Ticket ticket = ticketBL.GetTicket(ticketId);
                 if (project.Developers.FirstOrDefault(d => d.Id == currentUser.Id) == null)
                 {
                     return Unauthorized("Only developers assigned to this project can watch the tasks");
@@ -180,18 +164,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
                 if (ticket.TaskWatchers.FirstOrDefault(u => u.Id == currentUser.Id) == null)
                 {
-                    //ticket.TaskWatchers.Add(currentUser);
                     ticketBL.UpdateTicketAddWatcher(ticket, currentUser);
                 }
                 else
                 {
-                    //ticket.TaskWatchers.Remove(currentUser);
                     ticketBL.UpdateTicketRemoveWatcher(ticket, currentUser);
                 }
-
-                //_context.Ticket.Update(ticket);
-                //await _context.SaveChangesAsync();
-
                 return RedirectToAction("Details", "Project", new { projectId = projectId });
             }
             catch (Exception ex)
