@@ -51,18 +51,10 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             [Bind("Id, Completed, Name, Hours, Priority, ProjectId, Project")] Ticket ticket,
             int projectId, string[] taskOwnerIds, Priority priority = Priority.low)
         {
-            //This returns invalid because ModelState.Project is null
-            //if (!ModelState.IsValid)
-            //{
-            //    return RedirectToAction("Create", new { projectId = projectId });
-            //}
-
             if (taskOwnerIds.Count() == 0)
             {
                 return RedirectToAction("Create", new { projectId = projectId });
             }
-
-            // ask zach if this is considered BL because it doesnt look  like its connecting to database
             Ticket newTicket = new Ticket();
             newTicket.ProjectId = projectId;
             newTicket.Name = ticket.Name;
@@ -72,16 +64,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
             foreach (String taskOwnerId in taskOwnerIds)
             {
-                //User business logic
                 ApplicationUser dev = userBL.GetUserByUserId(taskOwnerId);
                 newTicket.TaskOwners.Add(dev);
             }
-
-
-            //await _context.Ticket.AddAsync(newTicket);
-            //await _context.SaveChangesAsync();
-            
-            // BL
             ticketBL.CreateTicket(newTicket);
             return RedirectToAction("Index", "Project");
         }
@@ -91,25 +76,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         {
             try
             {
-                // user businesss logic
-                //ApplicationUser currentUser = await _context.Users.Include(u => u.OwnedTickets).FirstAsync(u => u.UserName == User.Identity.Name);
                 ApplicationUser currentUser = await userBL.GetCurrentUserByNameAsync(User.Identity.Name);
-
-                // get ticket BL
-                //Ticket ticket = await _context.Ticket.Include(t => t.TaskOwners).FirstAsync(t => t.Id == ticketId);
                 Ticket ticket = ticketBL.GetTicket(ticketId);
-
                 if (ticket.TaskOwners.FirstOrDefault(to => to.Id == currentUser.Id) == null)
                 {
                     return Unauthorized("Only developers who are a task owner of this project can mark a task as complete");
                 }
-
-                // update ticket
-                //ticket.Completed = !ticket.Completed;
-                //_context.Ticket.Update(ticket);
-                //await _context.SaveChangesAsync();
                 ticketBL.UpdateTicketStatus(ticket);
-
                 return RedirectToAction("Details", "Project", new { projectId = projectId });
             }
             catch (Exception ex)
@@ -123,24 +96,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
         {
             try
             {
-                // user BL
                 ApplicationUser currentUser = await userBL.GetCurrentUserByNameAsync(User.Identity.Name);
-                // Refactored to Ticket BL
-                //Ticket ticket = await _context.Ticket.Include(t => t.TaskOwners).FirstAsync(t => t.Id == ticketId);
                 Ticket ticket = ticketBL.GetTicket(ticketId);
-
                 if (ticket.TaskOwners.FirstOrDefault(to => to.Id == currentUser.Id) == null)
                 {
                     return Unauthorized("Only developers who are a task owner of this project can adjust required hours of a task");
                 }
-
-
-                //ticket.Hours = hours;
                 ticketBL.UpdateTicketRequiredHours(ticket, hours);
-
-                //_context.Ticket.Update(ticket);
-                //await _context.SaveChangesAsync();
-
                 return RedirectToAction("Details", "Project", new { projectId = projectId });
             }
             catch (Exception ex)

@@ -111,8 +111,6 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
             try
             {
-                //User Business logic get users by role dev
-                //developers = (List<ApplicationUser>?)await _userManager.GetUsersInRoleAsync("Developer");
                 developers = await userBL.GetAllUsersWithSpecificRoleAsync("Developer");
             }
             catch (Exception ex)
@@ -138,19 +136,10 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
             {
                 foreach (String developerId in developerIds)
                 {
-                    //User Business Logic. Get developer by id
-                    //ApplicationUser dev = await _userManager.FindByIdAsync(developerId);
                     ApplicationUser dev = userBL.GetUserByUserId(developerId);
-                    //Check this if it should be on project BL
                     project.Developers.Add(dev);
                 }
-
-                
-                //_context.Project.Add(project);
                 projectBL.CreateProject(project);
-
-                //_context.SaveChanges();
-
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -161,26 +150,13 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Controllers
 
         public IActionResult Details(int projectId)
         {
-            //Project? project = _context.Project
-            //    .Include(p => p.Ticket)
-            //    .ThenInclude(t => t.TaskWatchers)
-            //    .Include(u => u.Developers)
-            //    .ThenInclude(d => d.WatchedTickets)
-            //    .FirstOrDefault(p => p.Id == projectId);
-
             Project project = projectBL.GetProjectDetails(projectId);
-
             if (project == null)
             {
                 return NotFound();
             }
-
-            //This should be refactored or not?
-            //Ticket BL is needed here
             List<Ticket> tickets = project.Ticket.ToList();
-            //User BL is needed here
             List<ApplicationUser> developers = project.Developers.ToList();
-
             return View(project);
         }
     }
