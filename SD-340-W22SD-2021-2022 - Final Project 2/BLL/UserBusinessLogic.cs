@@ -12,7 +12,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         {
             _userManager = userManager;
         }
-
+        // To UnitTest
+        // Valid: Test if return a list of users without role.
+        // Invalid: If users without role returns a 0 count throw InvalidDataException
         public async Task<List<ApplicationUser>> GetAllUsersWithoutRoleAsync()
         {
             List<ApplicationUser> usersWithoutRole = new List<ApplicationUser>();
@@ -27,34 +29,91 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
                     usersWithoutRole.Add(user);
                 }
             }
-
-            return usersWithoutRole;
+            if(usersWithoutRole.Count() != 0)
+            {
+                return usersWithoutRole;
+            }
+            else
+            {
+                throw new InvalidDataException("There's no usersWithoutRole");
+            }
         }
-
+        // To UnitTest
+        // Valid: Test if user will be changing the role
+        // Invalid: If role is not valid throw Argument Exception.
         public async Task AssignUserToARoleAsync(ApplicationUser user, string role)
         {
-            await _userManager.AddToRoleAsync(user, role);
+            if(role == "Developer" || role == "Project Manager")
+            {
+                await _userManager.AddToRoleAsync(user, role);
+            } else
+            {
+                throw new ArgumentException("Invalid Role");
+            }
+            
         }
-
+        // To UnitTest
+        // Valid: Test if list will return roles of the user
+        // Invalid: If user roles returns a 0 count throw InvalidDataException.
         public async Task <List<string>> GetUserRoles(ApplicationUser user)
         {
-            return (List<string>)await _userManager.GetRolesAsync(user);
-        }
+            List<string> userRoles = (List<string>)await _userManager.GetRolesAsync(user);
 
+            if(userRoles.Count() != 0)
+            {
+                return userRoles;
+            } else
+            {
+                throw new InvalidDataException("There's no role for the given user");
+            }
+            
+        }
+        // To UnitTest
+        // Valid: Test if passing a role will return a list of users.
+        // Invalid: If role argument passed an invalid role throw an exception.
         public async Task<List<ApplicationUser>> GetAllUsersWithSpecificRoleAsync(string role)
         {
-            return (List<ApplicationUser>)await _userManager.GetUsersInRoleAsync(role);
+            if(role == "Developer" || role == "Project Manager")
+            {
+                return (List<ApplicationUser>)await _userManager.GetUsersInRoleAsync(role);
+            } else
+            {
+                throw new ArgumentException("There's no users with the given role");
+            }   
         }
-
+        // To UnitTest
+        // Valid: Test method returns a user with the given user id.
+        // Invalid: Test method if returns an invalid user throw a nullreferenceexception.
         public ApplicationUser GetUserByUserId(string userId)
         {
-            return _userManager.Users.Include(user => user.OwnedTickets).Include(user => user.WatchedTickets).Include(user => user.Tickets).Include(user => user.Projects).First(user => user.Id == userId);
+            try
+            {
+                ApplicationUser currUser = _userManager.Users
+                    .Include(user => user.OwnedTickets)
+                    .Include(user => user.WatchedTickets)
+                    .Include(user => user.Tickets)
+                    .Include(user => user.Projects)
+                    .First(user => user.Id == userId);
+                return currUser;
+            } catch
+            {
+                throw new NullReferenceException("User not found");
+            }
         }
-
+        // To UnitTest
+        // Valid: Test method returns a user with the given name identity.
+        // Invalid: Test method if returns an invalid user throw a nullreferenceexception.
         public async Task<ApplicationUser> GetCurrentUserByNameAsync(string identity)
         {
-            ApplicationUser currUser = await _userManager.Users.Include(user => user.OwnedTickets).Include(user => user.WatchedTickets).Include(user => user.Tickets).Include(user => user.Projects).FirstAsync(user => user.UserName == identity);
-            return currUser;
+            try
+            {
+                ApplicationUser currUser = await _userManager.Users.Include(user => user.OwnedTickets).Include(user => user.WatchedTickets).Include(user => user.Tickets).Include(user => user.Projects).FirstAsync(user => user.UserName == identity);
+                return currUser;
+            } catch
+            {
+                throw new NullReferenceException("User not found");
+            }
+            
         }
 
     }
