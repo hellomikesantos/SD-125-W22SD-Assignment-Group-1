@@ -21,7 +21,6 @@ namespace ApplicationUnitTests
 
         public TicketBLLUnitTests()
         {
-            // mock data
             var ticketData = new List<Ticket>
             {
                 new Ticket {Id = 1},
@@ -44,6 +43,92 @@ namespace ApplicationUnitTests
 
             BusinessLogic = new TicketBusinessLogic(new TicketRepository(mockContextTicket.Object),
                 userManager);
+        }
+
+        [TestMethod]
+        public void CreateTicket_ValidInput_CreatesNewTicketAndAddsToTickets()
+        {
+            //BusinessLogic.CreateTicket(new Ticket)
+
+            //Assert.AreEqual()
+        }
+
+        [TestMethod]
+        public void GetTicket_ValidInput_ReturnsTicketEntity()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetTicket_TicketNotFound_IfInvalidId_ThrowsNullReferenceException()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetTicketList_ValidInput_ReturnsListOfTickets()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetCompletedTickets_ValidInput_ReturnsListofTicketsThatAreCompleted()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetCompletedTickets_NoTicketList_ThrowsInvalidDataException()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetUncompletedTickets_ValidInput_ReturnsListOFTicketsThatAreUncompleted()
+        {
+
+        }
+
+        [TestMethod]
+        public void GetUncompletedTickets_NoTicketList_ThrowsInvalidDataException()
+        {
+
+        }
+
+        [TestMethod]
+        public void UpdateTicketStatus_ValidInput_UpdatesTheTicketStatusToNewBoolValue()
+        {
+
+        }
+
+        [TestMethod]
+        public void UpdateTicketStatus_TicketNotFound_ThrowsNullReferenceException()
+        {
+
+        }
+
+        [TestMethod]
+        public void UpdateTicketRequiredHours_ValidInput_UpdatesTheTicketRequiredHoursToNewIntValue()
+        {
+
+        }
+
+        [TestMethod]
+        public void UpdateTicketRequiredHours_HoursNotInExpectedRange_ThrowsArgumentException()
+        {
+
+        }
+
+        [TestMethod]
+        public void UpdateTicketAddWatcher_ValidInput_AddsWatcherToTaskWatchersInTicket()
+        {
+
+        }
+
+        [TestMethod]
+        public void UpdateTicketRemoveWatcher_ValidInput_RemovesWatcherFromTaskWatchersInTicket()
+        {
+
         }
 
     }
