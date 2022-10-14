@@ -43,7 +43,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         }
         // To UnitTest
         // Valid: Test if ticket list is returning the correct count
-        // Invalid: Test if count is 0 if invalid projectId
+        // Invalid:.
         public List<Ticket> GetTicketList(int projectId)
         {
             return repo.GetList(ticket => ticket.ProjectId == projectId).ToList();
@@ -92,7 +92,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
                 repo.Save();
             } else
             {
-                throw new Exception("Invalid Hrs");
+                throw new ArgumentException("Invalid Hrs");
             }
             
         }

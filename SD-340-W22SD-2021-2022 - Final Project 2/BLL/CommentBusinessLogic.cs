@@ -14,6 +14,9 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
             _userManager = userManager;
         }
 
+        // To UnitTest
+        // Valid: Test method if returns a list of comments.
+        // Invalid: If ticket count is still the same
         public List<Comment> GetAllCommentsByTask(int ticketId)
         {
             return repo.GetList(comment => comment.TicketId == ticketId).ToList();

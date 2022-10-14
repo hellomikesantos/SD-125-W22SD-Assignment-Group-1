@@ -14,7 +14,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         }
         // To UnitTest
         // Valid: Test if return a list of users without role.
-        // Invalid: If users without role returns a 0 count throw InvalidDataException
+        // Invalid:.
         public async Task<List<ApplicationUser>> GetAllUsersWithoutRoleAsync()
         {
             List<ApplicationUser> usersWithoutRole = new List<ApplicationUser>();
@@ -29,14 +29,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
                     usersWithoutRole.Add(user);
                 }
             }
-            if(usersWithoutRole.Count() != 0)
-            {
-                return usersWithoutRole;
-            }
-            else
-            {
-                throw new InvalidDataException("There's no usersWithoutRole");
-            }
+            
+            return usersWithoutRole;
         }
         // To UnitTest
         // Valid: Test if user will be changing the role
@@ -54,18 +48,11 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         }
         // To UnitTest
         // Valid: Test if list will return roles of the user
-        // Invalid: If user roles returns a 0 count throw InvalidDataException.
+        // Invalid:.
         public async Task <List<string>> GetUserRoles(ApplicationUser user)
         {
             List<string> userRoles = (List<string>)await _userManager.GetRolesAsync(user);
-
-            if(userRoles.Count() != 0)
-            {
-                return userRoles;
-            } else
-            {
-                throw new InvalidDataException("There's no role for the given user");
-            }
+            return userRoles;
             
         }
         // To UnitTest
