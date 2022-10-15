@@ -53,9 +53,9 @@ namespace ApplicationUnitTests
 
             // act
             BusinessLogic.CreateTicket(new Ticket());
-            //int actualCount = BusinessLogic.GetTicketList().Count();
+            int actualCount = BusinessLogic.GetTicketList().Count();
 
-            //Assert.AreEqual(assertedCount, actualCount);
+            Assert.AreEqual(assertedCount, actualCount);
         }
 
         [DataRow(1)]
@@ -94,17 +94,21 @@ namespace ApplicationUnitTests
             Assert.AreEqual(assertedCount, actualCount);
         }
 
-
+        [DataRow(2)]
         [TestMethod]
-        public void GetUncompletedTickets_ValidInput_ReturnsListOFTicketsThatAreUncompleted()
+        public void GetUncompletedTickets_ValidInput_ReturnsListOFTicketsThatAreUncompleted(int assertedCount)
         {
-
+            int actualCount = BusinessLogic.GetTicketList().Count();
+            Assert.AreEqual(assertedCount, actualCount);
         }
 
         [TestMethod]
-        public void GetUncompletedTickets_NoTicketList_ThrowsInvalidDataException()
+        public void GetUncompletedTickets_ProjectIdNotFound_ThrowsNullReferenceException()
         {
-
+            Assert.ThrowsException<NullReferenceException>(() =>
+            {
+                BusinessLogic.GetTicketList();
+            });
         }
 
         [TestMethod]
