@@ -94,15 +94,6 @@ namespace ApplicationUnitTests
             Assert.AreEqual(assertedCount, actualCount);
         }
 
-        [TestMethod]
-        public void GetCompletedTickets_NoTicketList_ThrowsInvalidDataException()
-        {
-            BusinessLogic.
-            Assert.ThrowsException<InvalidDataException>(() =>
-            {
-                BusinessLogic.GetCompletedTickets();
-            })
-        }
 
         [TestMethod]
         public void GetUncompletedTickets_ValidInput_ReturnsListOFTicketsThatAreUncompleted()
