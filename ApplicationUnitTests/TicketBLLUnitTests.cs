@@ -45,42 +45,63 @@ namespace ApplicationUnitTests
                 userManager);
         }
 
+        [DataRow(6)]
         [TestMethod]
-        public void CreateTicket_ValidInput_CreatesNewTicketAndAddsToTickets()
+        public void CreateTicket_ValidInput_CreatesNewTicketAndAddsToTickets(int assertedCount)
         {
-            //BusinessLogic.CreateTicket(new Ticket)
+            // arrange
 
-            //Assert.AreEqual()
+            // act
+            BusinessLogic.CreateTicket(new Ticket());
+            //int actualCount = BusinessLogic.GetTicketList().Count();
+
+            //Assert.AreEqual(assertedCount, actualCount);
         }
 
+        [DataRow(1)]
         [TestMethod]
-        public void GetTicket_ValidInput_ReturnsTicketEntity()
+        public void GetTicket_ValidInput_ReturnsTicketEntity(int assertedId)
         {
-
+            // assert
+            // act
+            int actualId = BusinessLogic.GetTicket(1).Id;
+            Assert.AreEqual(assertedId, actualId);
         }
 
         [TestMethod]
         public void GetTicket_TicketNotFound_IfInvalidId_ThrowsNullReferenceException()
         {
 
+            Assert.ThrowsException<NullReferenceException>(() =>
+            {
+                BusinessLogic.GetTicket(10);
+            });
         }
 
+        [DataRow(5)]
         [TestMethod]
-        public void GetTicketList_ValidInput_ReturnsListOfTickets()
+        public void GetTicketList_ValidInput_ReturnsListOfTickets(int assertedCount)
         {
-
+            int actualCount = BusinessLogic.GetTicketList().Count();
+            Assert.AreEqual(assertedCount, actualCount);
         }
 
+        [DataRow(3)]
         [TestMethod]
-        public void GetCompletedTickets_ValidInput_ReturnsListofTicketsThatAreCompleted()
+        public void GetCompletedTickets_ValidInput_ReturnsListofTicketsThatAreCompleted(int assertedCount)
         {
-
+            int actualCount = BusinessLogic.GetCompletedTickets().Count();
+            Assert.AreEqual(assertedCount, actualCount);
         }
 
         [TestMethod]
         public void GetCompletedTickets_NoTicketList_ThrowsInvalidDataException()
         {
-
+            BusinessLogic.
+            Assert.ThrowsException<InvalidDataException>(() =>
+            {
+                BusinessLogic.GetCompletedTickets();
+            })
         }
 
         [TestMethod]
