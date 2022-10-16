@@ -27,9 +27,9 @@ namespace ApplicationUnitTests
             // Project DbSet
             var projData = new List<Project>
             {
-                new Project{Id = 1, Name = "Project 1"},
-                new Project{Id = 2, Name = "Project 2"},
-                new Project{Id = 3, Name = "Project 3"},
+                new Project{Id = 1, Name = "Project 1", Developers = {new ApplicationUser()}},
+                new Project{Id = 2, Name = "Project 2", Developers = {new ApplicationUser()}},
+                new Project{Id = 3, Name = "Project 3", Developers = {new ApplicationUser()}},
             }.AsQueryable();
 
             var ProjMockDbSet = new Mock<DbSet<Project>>();
@@ -87,32 +87,16 @@ namespace ApplicationUnitTests
             commentMockContext.Setup(m => m.Comment).Returns(commentMockDbSet.Object);
 
             CommentBusinessLogic = new CommentBusinessLogic(new CommentRepository(commentMockContext.Object), UserManager);
-
-            // User DbSet
-            var userData = new List<ApplicationUser>
-            {
-                new ApplicationUser{Id = "9ac002a1-5cc3-499e-bcc7-36849706b9ff", Email = "mockUser1", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
-                new ApplicationUser{Id = "df646de0-62a4-480a-8fe5-aa7fe98341bf", Email = "mockUser2", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
-                new ApplicationUser{Id = "df646de0-62a4-480a-8fe5-aa7fe98341sf", Email = "mockUser3", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
-            }.AsQueryable();
-
-            var userMockDbSet = new Mock<DbSet<ApplicationUser>>();
-
-            userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.Provider).Returns(userData.Provider);
-            userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.Expression).Returns(userData.Expression);
-            userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.ElementType).Returns(userData.ElementType);
-            userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.GetEnumerator()).Returns(userData.GetEnumerator());
-
-            var userMockContext = new Mock<ApplicationDbContext>();
-            userMockContext.Setup(m => m.Users).Returns(userMockDbSet.Object);
-
-            UserBusinessLogic = new UserBusinessLogic(UserManager);
         }
 
+        [DataRow("9ac002a1-5cc3-499e-bcc7-36849706b9ff", 3)]
         [TestMethod]
-        public void GetAllProjectsByDeveloperAsync_ValidInput_ReturnsListOfProjectsByDeveloper(int count)
+        public void GetAllProjectsByDeveloperAsync_ValidInput_ReturnsListOfProjectsByDeveloper(string devId, int expectedProjCount)
         {
+            ApplicationUser dev = UserBusinessLogic.GetUserByUserId(devId);
+            int actualProjectCount = dev.Projects.Count();
 
+            Assert.AreEqual(expectedProjCount, actualProjectCount);
         }
 
         [TestMethod]
