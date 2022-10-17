@@ -64,7 +64,7 @@ namespace ApplicationUnitTests
 
             // Act
             BusinessLogic.CreateComment(actualComment);
-            int actualCommentCount = BusinessLogic.GetAllCommentsByTask(1).Count();
+            int actualCommentCount = BusinessLogic.repo.GetAll().Count();
             // Assert
             Assert.AreEqual(assertedCount, actualCommentCount);
 

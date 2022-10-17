@@ -34,7 +34,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
 
         public ICollection<Comment> GetAll()
         {
-            throw new NotImplementedException();
+            return _db.Comment.ToList();
         }
 
         public ICollection<Comment> GetList(Func<Comment, bool> predicate)
@@ -44,7 +44,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
 
         public void Save()
         {
-            throw new NotImplementedException();
+            _db.SaveChanges();
         }
 
         public Comment Update(Comment entity)
