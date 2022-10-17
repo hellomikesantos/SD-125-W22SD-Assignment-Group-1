@@ -10,9 +10,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Data
             : base(options)
         {
         }
+        public ApplicationDbContext()
+        {
 
-        public DbSet<Comment> Comment { get; set; }
-        public DbSet<Project> Project { get; set; }
-        public DbSet<Ticket> Ticket { get; set; }
+        }
+        public virtual DbSet<Comment> Comment { get; set; }
+        public virtual DbSet<Project> Project { get; set; }
+        public virtual DbSet<Ticket> Ticket { get; set; }
     }
 }
