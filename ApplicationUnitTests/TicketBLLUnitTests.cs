@@ -211,18 +211,23 @@ namespace ApplicationUnitTests
         [TestMethod]
         public void UpdateTicketAddWatcher_ValidInput_AddsWatcherToTaskWatchersInTicket(int assertedCount)
         {
-            ApplicationUser user = UserManager.Users.First(u => u.Id == "9ac002a1-5cc3-499e-bcc7-36849706b9ff");
+            ApplicationUser user = new ApplicationUser();
             Ticket entity = TicketBusinessLogic.GetTicket(1);
             TicketBusinessLogic.UpdateTicketAddWatcher(entity, user);
             int actualCount = entity.TaskWatchers.Count();
             Assert.AreEqual(assertedCount, actualCount);
         }
 
+        [DataRow(0)]
         [TestMethod]
-        public void UpdateTicketRemoveWatcher_ValidInput_RemovesWatcherFromTaskWatchersInTicket()
+        public void UpdateTicketRemoveWatcher_ValidInput_RemovesWatcherFromTaskWatchersInTicket(int assertedCount)
         {
-
-
+            ApplicationUser user = new ApplicationUser();
+            Ticket entity = TicketBusinessLogic.GetTicket(2);
+            TicketBusinessLogic.UpdateTicketAddWatcher(entity, user);
+            TicketBusinessLogic.UpdateTicketRemoveWatcher(entity, user);
+            int actualCount = entity.TaskWatchers.Count();
+            Assert.AreEqual(assertedCount, actualCount);
         }
     }
 }
