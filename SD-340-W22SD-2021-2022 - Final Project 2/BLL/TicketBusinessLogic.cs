@@ -85,7 +85,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         // Invalid: Hrs will not be on the range 1-999.
         public void UpdateTicketRequiredHours(Ticket entity, int hours)
         {
-            if(hours <= 0 || hours >= 1000)
+            if(hours >= 0 && hours <= 1000)
             {
                 entity.Hours = hours;
                 repo.Update(entity);
