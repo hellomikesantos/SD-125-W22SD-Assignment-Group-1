@@ -8,14 +8,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
     {
         private IRepository<Ticket> repo;
         private readonly UserManager<ApplicationUser> _userManager;
-        
 
         public TicketBusinessLogic(IRepository<Ticket> repo, 
             UserManager<ApplicationUser> userManager)
         {
             this.repo = repo;
             this._userManager = userManager;
-            
         }
 
         // To UnitTest

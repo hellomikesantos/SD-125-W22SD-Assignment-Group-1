@@ -19,10 +19,14 @@ namespace ApplicationUnitTests
     {
         private TicketBusinessLogic TicketBusinessLogic;
         private ProjectBusinessLogic ProjectBusinessLogic;
-        private UserManager<ApplicationUser> userManager;
+        private CommentBusinessLogic CommentBusinessLogic;
+        private UserBusinessLogic UserBusinessLogic;
+        private UserManager<ApplicationUser> UserManager;
+        private Mock<UserManager<ApplicationUser>> UserManagerMock;
 
         public TicketBLLUnitTests()
         {
+
             // Project DbSet
             var projData = new List<Project>
             {
@@ -41,7 +45,7 @@ namespace ApplicationUnitTests
             var projMockContext = new Mock<ApplicationDbContext>();
             projMockContext.Setup(m => m.Project).Returns(ProjMockDbSet.Object);
 
-            ProjectBusinessLogic = new ProjectBusinessLogic(new ProjectRepository(projMockContext.Object), userManager);
+            ProjectBusinessLogic = new ProjectBusinessLogic(new ProjectRepository(projMockContext.Object), UserManager);
 
             // Ticket DbSet
             var ticketData = new List<Ticket>
@@ -65,48 +69,48 @@ namespace ApplicationUnitTests
             var ticketMockContext = new Mock<ApplicationDbContext>();
             ticketMockContext.Setup(m => m.Ticket).Returns(ticketMockDbSet.Object);
 
-            TicketBusinessLogic = new TicketBusinessLogic(new TicketRepository(ticketMockContext.Object), userManager);
+            TicketBusinessLogic = new TicketBusinessLogic(new TicketRepository(ticketMockContext.Object), UserManager);
 
-            //// Comment DbSet
-            //var commentData = new List<Comment>
-            //{
-            //    //Add User
-            //    new Comment{Id = 1, Content = "Comment One", TicketId = 1, Ticket = ticketData.First(t => t.Id == 1)},
-            //    new Comment{Id = 2, Content = "Comment Two", TicketId = 2, Ticket = ticketData.First(t => t.Id == 2)},
-            //    new Comment{Id = 3, Content = "Comment Three", TicketId = 3, Ticket = ticketData.First(t => t.Id == 3)},
-            //    }.AsQueryable();
+            // Comment DbSet
+            var commentData = new List<Comment>
+            {
+                //Add User
+                new Comment{Id = 1, Content = "Comment One", TicketId = 1, Ticket = ticketData.First(t => t.Id == 1)},
+                new Comment{Id = 2, Content = "Comment Two", TicketId = 2, Ticket = ticketData.First(t => t.Id == 2)},
+                new Comment{Id = 3, Content = "Comment Three", TicketId = 3, Ticket = ticketData.First(t => t.Id == 3)},
+                }.AsQueryable();
 
-            //var commentMockDbSet = new Mock<DbSet<Comment>>();
+            var commentMockDbSet = new Mock<DbSet<Comment>>();
 
-            //commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.Provider).Returns(commentData.Provider);
-            //commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.Expression).Returns(commentData.Expression);
-            //commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.ElementType).Returns(commentData.ElementType);
-            //commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.GetEnumerator()).Returns(commentData.GetEnumerator());
+            commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.Provider).Returns(commentData.Provider);
+            commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.Expression).Returns(commentData.Expression);
+            commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.ElementType).Returns(commentData.ElementType);
+            commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.GetEnumerator()).Returns(commentData.GetEnumerator());
 
-            //var commentMockContext = new Mock<ApplicationDbContext>();
-            //commentMockContext.Setup(m => m.Comment).Returns(commentMockDbSet.Object);
+            var commentMockContext = new Mock<ApplicationDbContext>();
+            commentMockContext.Setup(m => m.Comment).Returns(commentMockDbSet.Object);
 
-            //CommentBusinessLogic = new CommentBusinessLogic(new CommentRepository(commentMockContext.Object), UserManager);
+            CommentBusinessLogic = new CommentBusinessLogic(new CommentRepository(commentMockContext.Object), UserManager);
 
-            //// User DbSet
-            //var userData = new List<ApplicationUser>
-            //{
-            //    new ApplicationUser{Id = "9ac002a1-5cc3-499e-bcc7-36849706b9ff", Email = "mockUser1", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
-            //    new ApplicationUser{Id = "df646de0-62a4-480a-8fe5-aa7fe98341bf", Email = "mockUser2", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
-            //    new ApplicationUser{Id = "df646de0-62a4-480a-8fe5-aa7fe98341sf", Email = "mockUser3", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
-            //}.AsQueryable();
+            // User DbSet
+            var userData = new List<ApplicationUser>
+            {
+                new ApplicationUser{Id = "9ac002a1-5cc3-499e-bcc7-36849706b9ff", Email = "mockUser1", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
+                new ApplicationUser{Id = "df646de0-62a4-480a-8fe5-aa7fe98341bf", Email = "mockUser2", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
+                new ApplicationUser{Id = "df646de0-62a4-480a-8fe5-aa7fe98341sf", Email = "mockUser3", Projects = projData.ToList(), Tickets = ticketData.ToList(), Comments = commentData.ToList()},
+            }.AsQueryable();
 
-            //var userMockDbSet = new Mock<DbSet<ApplicationUser>>();
+            var userMockDbSet = new Mock<DbSet<ApplicationUser>>();
 
-            //userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.Provider).Returns(userData.Provider);
-            //userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.Expression).Returns(userData.Expression);
-            //userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.ElementType).Returns(userData.ElementType);
-            //userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.GetEnumerator()).Returns(userData.GetEnumerator());
+            userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.Provider).Returns(userData.Provider);
+            userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.Expression).Returns(userData.Expression);
+            userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.ElementType).Returns(userData.ElementType);
+            userMockDbSet.As<IQueryable<ApplicationUser>>().Setup(m => m.GetEnumerator()).Returns(userData.GetEnumerator());
 
-            //var userMockContext = new Mock<ApplicationDbContext>();
-            //userMockContext.Setup(m => m.Users).Returns(userMockDbSet.Object);
+            var userMockContext = new Mock<ApplicationDbContext>();
+            userMockContext.Setup(m => m.Users).Returns(userMockDbSet.Object);
 
-            //UserBusinessLogic = new UserBusinessLogic(UserManager);
+            UserBusinessLogic = new UserBusinessLogic(UserManager);
 
         }
 
@@ -203,14 +207,15 @@ namespace ApplicationUnitTests
             });
         }
 
+        [DataRow(1)]
         [TestMethod]
-        public void UpdateTicketAddWatcher_ValidInput_AddsWatcherToTaskWatchersInTicket()
+        public void UpdateTicketAddWatcher_ValidInput_AddsWatcherToTaskWatchersInTicket(int assertedCount)
         {
-            //ApplicationUser user = userManager.Users.First(u => u.)
-            //Ticket entity = TicketBusinessLogic.GetTicket(1);
-            //TicketBusinessLogic.UpdateTicketAddWatcher(entity, )
-            //int actualCount = TicketBusinessLogic.
-            //Assert.AreEqual(assertedCount, actualCount)
+            ApplicationUser user = UserManager.Users.First(u => u.Id == "9ac002a1-5cc3-499e-bcc7-36849706b9ff");
+            Ticket entity = TicketBusinessLogic.GetTicket(1);
+            TicketBusinessLogic.UpdateTicketAddWatcher(entity, user);
+            int actualCount = entity.TaskWatchers.Count();
+            Assert.AreEqual(assertedCount, actualCount);
         }
 
         [TestMethod]
