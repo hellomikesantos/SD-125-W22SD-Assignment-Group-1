@@ -76,7 +76,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         public List<Ticket> GetUncompletedTickets(int projectid)
         {
             List<Ticket> ticketsInProj = repo.GetList(project => project.ProjectId == projectid).ToList();
-            return ticketsInProj.Where(ticket => ticket.Completed == false).ToList();
+            List<Ticket> uncompletedTickets = ticketsInProj.Where(ticket => ticket.Completed == false).ToList();
+            if(uncompletedTickets.Count != 0)
+            {
+                return uncompletedTickets;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
         // To UnitTest
         // Valid: Test if ticket status is updating to the correct value(true/false).

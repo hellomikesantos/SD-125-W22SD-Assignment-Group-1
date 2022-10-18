@@ -55,7 +55,7 @@ namespace ApplicationUnitTests
                 new Ticket{Id = 1, ProjectId = 1,Project = projData.First(p => p.Id == 1), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 1 of Project 1"},
                 new Ticket{Id = 2, ProjectId = 1,Project = projData.First(p => p.Id == 1), Completed = true, Priority = Priority.low, Hours = 3, Name = "Ticket 2 of Project 1"},
                 new Ticket{Id = 3, ProjectId = 2,Project = projData.First(p => p.Id == 2), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 1 of Project 2"},
-                new Ticket{Id = 4, ProjectId = 3,Project = projData.First(p => p.Id == 3), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 1 of Project 3"},
+                new Ticket{Id = 4, ProjectId = 3,Project = projData.First(p => p.Id == 3), Completed = true, Priority = Priority.medium, Hours = 5, Name = "Ticket 1 of Project 3"},
                 //new Ticket{Id = 4, ProjectId = 4,Project = projData.First(p => p.Id == 4), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 4"},
                 //new Ticket{Id = 5, ProjectId = 5,Project = projData.First(p => p.Id == 5), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 5"},
             }.AsQueryable();
@@ -120,6 +120,7 @@ namespace ApplicationUnitTests
         {
             var ticketFalse = TicketBusinessLogic.GetTicket(1).Completed = false;
             var ticketTrue = TicketBusinessLogic.GetTicket(2).Completed = true;
+            var ticket4True = TicketBusinessLogic.GetTicket(4).Completed = true;
         }
 
         [DataRow(2)]
@@ -196,6 +197,15 @@ namespace ApplicationUnitTests
         {
             int actualCount = TicketBusinessLogic.GetUncompletedTickets(1).Count();
             Assert.AreEqual(assertedCount, actualCount);    
+        }
+
+        [TestMethod]
+        public void GetUncompletedTickets_ListCountIsZero_ThrowsInvalidOperationException()
+        {
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
+                TicketBusinessLogic.GetUncompletedTickets(3);
+            });
         }
 
         [DataRow(true)]
