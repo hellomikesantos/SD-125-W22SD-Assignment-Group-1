@@ -81,14 +81,6 @@ namespace ApplicationUnitTests
             Assert.AreEqual(expectedProjCount, allProjByDev.Count);
         }
 
-        [TestMethod]
-        public async Task GetAllProjectsByDeveloperAsync_UserNotFound_ThrowsNullReferenceException()
-        {
-            Assert.ThrowsExceptionAsync<NullReferenceException>(async () =>
-            {
-                await ProjectBusinessLogic.GetAllProjectsByDeveloperAsync("sadocsdkjcapwvqih");
-            });
-        }
 
         [DataRow("sadocsdkjcapwvqie")]
         [TestMethod]
@@ -107,6 +99,17 @@ namespace ApplicationUnitTests
             int actualCount = ProjectBusinessLogic.GetAllProjects().Count;
 
             Assert.AreEqual(expectedCount, actualCount);
+        }
+
+        [TestMethod]
+        public void GetAllProjects_ListCountIsZero_ThrowsInvalidOperationException()
+        {
+            ApplicationUser user = UserBusinessLogic.GetUserByUserId("9ac002a1-5cc3-499e-bcc7-36849706b9ff");
+            user.Projects = ProjectBusinessLogic.GetAllProjects();
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
+                ProjectBusinessLogic.GetAllProjects();
+            });
         }
 
         [DataRow(1)]

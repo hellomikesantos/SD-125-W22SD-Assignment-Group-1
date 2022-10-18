@@ -35,7 +35,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         // Invalid:
         public List<Project> GetAllProjects()
         {
-            return repo.GetAll().ToList();
+            List<Project> allProjects = repo.GetAll().ToList();
+            if(allProjects.Count != 0)
+            {
+                return allProjects;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
         // To UnitTest
         // Valid: Test if the correct project is being returned
