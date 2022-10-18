@@ -81,6 +81,15 @@ namespace ApplicationUnitTests
             Assert.AreEqual(expectedProjCount, allProjByDev.Count);
         }
 
+        [TestMethod]
+        public async Task GetAllProjectsByDeveloperAsync_UserNotFound_ThrowsNullReferenceException()
+        {
+            Assert.ThrowsExceptionAsync<NullReferenceException>(async () =>
+            {
+                await ProjectBusinessLogic.GetAllProjectsByDeveloperAsync("sadocsdkjcapwvqih");
+            });
+        }
+
         [DataRow("sadocsdkjcapwvqie")]
         [TestMethod]
         public async Task GetAllProjectsByDeveloperAsync_UserNotFound_ThrowsNullReferenceException(string devId)
