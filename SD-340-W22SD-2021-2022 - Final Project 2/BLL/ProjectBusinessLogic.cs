@@ -6,8 +6,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
 {
     public class ProjectBusinessLogic
     {
-        private IRepository<Project> repo;
-        private readonly UserManager<ApplicationUser> _userManager;
+        public IRepository<Project> repo;
+        public readonly UserManager<ApplicationUser> _userManager;
 
         public ProjectBusinessLogic(IRepository<Project> repo, UserManager<ApplicationUser> userManager)
         {
@@ -17,17 +17,18 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         // To UnitTest
         // Valid: Test if project list is returning the correct count
         // Invalid: Test if count is 0 if invalid devId
-        public async Task<List<Project>> GetAllProjectsByDeveloperAsync(string devId)
+        public async Task<List<Project>> GetAllProjectsByDeveloperAsync(string userId)
         {
-            try
+            ApplicationUser currUser = await _userManager.FindByIdAsync(userId);
+            if (currUser != null)
             {
-                ApplicationUser currUser = await _userManager.FindByIdAsync(devId);
-                return repo.GetList(project => project.Developers.Contains(currUser)).ToList();
-            } catch
+                return repo.GetList(p => p.Developers.Contains(currUser)).ToList();
+            } else
             {
-                throw new NullReferenceException("No Developer found with the given ID");
+                throw new NullReferenceException("User not found!");
             }
 
+            
         }
         // To UnitTest
         // Valid: Test if project list is returning the correct count.

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace ApplicationUnitTests
 {
@@ -17,19 +18,42 @@ namespace ApplicationUnitTests
     public class ProjectBLLUnitTests
     {
         private ProjectBusinessLogic ProjectBusinessLogic;
-        private TicketBusinessLogic TicketBusinessLogic;
-        private CommentBusinessLogic CommentBusinessLogic;
         private UserBusinessLogic UserBusinessLogic;
-        private UserManager<ApplicationUser> UserManager;
+        public readonly UserManager<ApplicationUser> UserManager;
 
         public ProjectBLLUnitTests()
         {
+            //UserData
+            var users = new List<ApplicationUser>
+            {
+                new ApplicationUser
+                {
+                    UserName = "Test",
+                    Id = "9ac002a1-5cc3-499e-bcc7-36849706b9ff",
+                    Email = "test@test.it"
+                }
+            }.AsQueryable();
+
+            var mockUserManager = new Mock<MockUserManager>();
+
+            mockUserManager.Setup(x => x.Users)
+                .Returns(users);
+            mockUserManager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+            mockUserManager.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>()))
+                .ReturnsAsync(IdentityResult.Success);
+            mockUserManager.Setup(um => um.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync((string userId) => UserManager.Users.SingleOrDefault(u => u.Id == userId));
+
+            UserManager = mockUserManager.Object;
+            UserBusinessLogic = new UserBusinessLogic(UserManager);
+
             // Project DbSet
             var projData = new List<Project>
             {
-                new Project{Id = 1, Name = "Project 1", Developers = {new ApplicationUser()}},
-                new Project{Id = 2, Name = "Project 2", Developers = {new ApplicationUser()}},
-                new Project{Id = 3, Name = "Project 3", Developers = {new ApplicationUser()}},
+                new Project{Id = 1, Name = "Project 1", Developers = UserManager.Users.ToList()},
+                new Project{Id = 2, Name = "Project 2", Developers = UserManager.Users.ToList()},
+                new Project{Id = 3, Name = "Project 3", Developers = UserManager.Users.ToList()},
             }.AsQueryable();
 
             var ProjMockDbSet = new Mock<DbSet<Project>>();
@@ -43,89 +67,65 @@ namespace ApplicationUnitTests
             projMockContext.Setup(m => m.Project).Returns(ProjMockDbSet.Object);
 
             ProjectBusinessLogic = new ProjectBusinessLogic(new ProjectRepository(projMockContext.Object), UserManager);
-
-            // Ticket DbSet
-            var ticketData = new List<Ticket>
-            {
-                //Add comment, dev, owner, watcher
-                new Ticket{Id = 1, ProjectId = 1,Project = projData.First(p => p.Id == 1), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 1"},
-                new Ticket{Id = 2, ProjectId = 2,Project = projData.First(p => p.Id == 2), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 2"},
-                new Ticket{Id = 3, ProjectId = 3,Project = projData.First(p => p.Id == 3), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 3"},
-                new Ticket{Id = 4, ProjectId = 4,Project = projData.First(p => p.Id == 4), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 4"},
-                new Ticket{Id = 5, ProjectId = 5,Project = projData.First(p => p.Id == 5), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 5"},
-            }.AsQueryable();
-
-            var ticketMockDbSet = new Mock<DbSet<Ticket>>();
-
-            ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.Provider).Returns(ticketData.Provider);
-            ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.Expression).Returns(ticketData.Expression);
-            ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.ElementType).Returns(ticketData.ElementType);
-            ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.GetEnumerator()).Returns(ticketData.GetEnumerator());
-
-            var ticketMockContext = new Mock<ApplicationDbContext>();
-            ticketMockContext.Setup(m => m.Ticket).Returns(ticketMockDbSet.Object);
-
-            TicketBusinessLogic = new TicketBusinessLogic(new TicketRepository(ticketMockContext.Object), UserManager);
-
-            // Comment DbSet
-            var commentData = new List<Comment>
-            {
-                //Add User
-                new Comment{Id = 1, Content = "Comment One", TicketId = 1, Ticket = ticketData.First(t => t.Id == 1)},
-                new Comment{Id = 2, Content = "Comment Two", TicketId = 2, Ticket = ticketData.First(t => t.Id == 2)},
-                new Comment{Id = 3, Content = "Comment Three", TicketId = 3, Ticket = ticketData.First(t => t.Id == 3)},
-                }.AsQueryable();
-
-            var commentMockDbSet = new Mock<DbSet<Comment>>();
-
-            commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.Provider).Returns(commentData.Provider);
-            commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.Expression).Returns(commentData.Expression);
-            commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.ElementType).Returns(commentData.ElementType);
-            commentMockDbSet.As<IQueryable<Comment>>().Setup(m => m.GetEnumerator()).Returns(commentData.GetEnumerator());
-
-            var commentMockContext = new Mock<ApplicationDbContext>();
-            commentMockContext.Setup(m => m.Comment).Returns(commentMockDbSet.Object);
-
-            CommentBusinessLogic = new CommentBusinessLogic(new CommentRepository(commentMockContext.Object), UserManager);
+            
         }
 
         [DataRow("9ac002a1-5cc3-499e-bcc7-36849706b9ff", 3)]
         [TestMethod]
-        public void GetAllProjectsByDeveloperAsync_ValidInput_ReturnsListOfProjectsByDeveloper(string devId, int expectedProjCount)
+        public async Task GetAllProjectsByDeveloperAsync_ValidInput_ReturnsListOfProjectsByDeveloperAsync(string devId, int expectedProjCount)
         {
-            ApplicationUser dev = UserBusinessLogic.GetUserByUserId(devId);
-            int actualProjectCount = dev.Projects.Count();
+            ApplicationUser currUser = UserBusinessLogic.GetUserByUserId(devId);
 
-            Assert.AreEqual(expectedProjCount, actualProjectCount);
+            List<Project> allProjByDev = await ProjectBusinessLogic.GetAllProjectsByDeveloperAsync(currUser.Id);
+
+            Assert.AreEqual(expectedProjCount, allProjByDev.Count);
         }
 
+        [DataRow("sadocsdkjcapwvqie")]
         [TestMethod]
-        public void GetAllProjectsByDeveloperAsync_TicketNotFound_ThrowsNullReferenceException()
+        public async Task GetAllProjectsByDeveloperAsync_UserNotFound_ThrowsNullReferenceException(string devId)
         {
-
+            Assert.ThrowsExceptionAsync<NullReferenceException>(async () =>
+            {
+                await ProjectBusinessLogic.GetAllProjectsByDeveloperAsync(devId);
+            });
         }
 
+        [DataRow(3)]
         [TestMethod]
-        public void GetAllProjects_Valid_ReturnsAllProjects()
+        public void GetAllProjects_Valid_ReturnsAllProjects(int expectedCount)
         {
+            int actualCount = ProjectBusinessLogic.GetAllProjects().Count;
 
+            Assert.AreEqual(expectedCount, actualCount);
         }
 
+        [DataRow(1)]
         [TestMethod]
-        public void GetProjectDetails_ValidInput_ReturnsAProjectByProjectId()
+        public void GetProjectDetails_ValidInput_ReturnsAProjectByProjectId(int projId)
         {
-
+            Project currProj = ProjectBusinessLogic.GetProjectDetails(projId);
+            Assert.IsTrue(currProj != null);
         }
 
+        [DataRow(5)]
         [TestMethod]
-        public void GetProjectDetails_ProjectNotFound_ThrowsNullReferenceException()
+        public void GetProjectDetails_ProjectNotFound_ThrowsNullReferenceException(int projId)
         {
-
+            Assert.ThrowsException<NullReferenceException>(() =>
+            {
+                ProjectBusinessLogic.GetProjectDetails(projId);
+            });
         }
 
+        [DataRow(3)]
         [TestMethod]
-        public void CreateProject_ValidInput_CreatesNewProjectAndAddsToProjects()
+        public void CreateProject_ValidInput_CreatesNewProjectAndAddsToProjects(int expectedCount)
         {
+            ProjectBusinessLogic.CreateProject(new Project { Name = "New proj", Developers = UserManager.Users.ToList(), Id = 4 });
+            int actualCount = ProjectBusinessLogic.GetAllProjects().Count;
+
+            Assert.AreEqual(expectedCount, actualCount);
 
         }
 
