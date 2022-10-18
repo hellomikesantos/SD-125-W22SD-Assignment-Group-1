@@ -19,6 +19,8 @@ namespace ApplicationUnitTests
     public class CommentBLLUnitTests
     {
         private CommentBusinessLogic BusinessLogic;
+        private ProjectBusinessLogic ProjectBusinessLogic;
+        private TicketBusinessLogic TicketBusinessLogic;
         private UserManager<ApplicationUser> UserManager;
         public CommentBLLUnitTests()
         {
@@ -26,8 +28,8 @@ namespace ApplicationUnitTests
             var data = new List<Comment>
             {
                 new Comment {Id = 1, Content = "Good", TicketId = 1, UserId = "1"},
-                new Comment {Id = 2, Content = "Great"},
-                new Comment {Id = 3, Content = "Nice"},
+                new Comment {Id = 2, Content = "Great", TicketId = 1, UserId = "2"},
+                new Comment {Id = 3, Content = "Nice", TicketId = 1, UserId = "3"},
             }.AsQueryable();
         
 
@@ -42,29 +44,34 @@ namespace ApplicationUnitTests
             mockContext.Setup(c => c.Comment).Returns(mockDbSet.Object);
 
             BusinessLogic = new CommentBusinessLogic(new CommentRepository(mockContext.Object), UserManager);
-
+   
+     
         }
          
-        [DataRow()]
+        [DataRow(3)]
         [TestMethod]
-        public void GetAllCommentsByTask_ValidInput_ReturnsListOfCommentsByTicketId()
+        public void GetAllCommentsByTask_ValidInput_ReturnsListOfCommentsByTicketId(int expectedCount)
         {
-            // Arrange
-            
             // Act
+            int actualCommentCount = BusinessLogic.GetAllCommentsByTask(1).Count;
+
             // Assert
+            Assert.AreEqual(expectedCount, actualCommentCount);
         }
 
-        [DataRow(4)]
+        [DataRow(3)]
         [TestMethod]
         public void CreateComment_ValidInput_CreatesNewCommentAndAddsToComments(int assertedCount)
         {
             // Arrange
-            var actualComment = new Comment();
-
+            Comment actualComment = new Comment();
+            actualComment.Content = "New Comment";
+            actualComment.Id = 4;
+            
             // Act
             BusinessLogic.CreateComment(actualComment);
-            int actualCommentCount = BusinessLogic.repo.GetAll().Count();
+            
+            int actualCommentCount = BusinessLogic.repo.GetAll().Count;
             // Assert
             Assert.AreEqual(assertedCount, actualCommentCount);
 

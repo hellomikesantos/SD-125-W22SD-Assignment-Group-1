@@ -14,7 +14,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.DAL
         public void Create(Comment entity)
         {
             _db.Comment.Add(entity);
-            _db.SaveChanges();
+            _db.SaveChangesAsync();
         }
 
         public void Delete(Comment entity)
