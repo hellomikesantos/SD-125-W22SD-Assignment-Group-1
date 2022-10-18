@@ -165,7 +165,7 @@ namespace ApplicationUnitTests
 
         // add to trello
         [TestMethod]
-        public void GetTicketList_NoListReturning_ThrowsInvalidOperationException()
+        public void GetTicketList_ListCountIsZero_ThrowsInvalidOperationException()
         {
             Assert.ThrowsException<InvalidOperationException>(() =>
             {
