@@ -44,7 +44,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         // Invalid:.
         public List<Ticket> GetTicketList(int projectId)
         {
-            return repo.GetList(ticket => ticket.ProjectId == projectId).ToList();
+            List<Ticket> ticketList = repo.GetList(ticket => ticket.ProjectId == projectId).ToList();
+            if (ticketList.Count != 0)
+            {
+                return ticketList;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
         // To UnitTest
         // Valid: Test if ticket list is returning all completed

@@ -33,6 +33,7 @@ namespace ApplicationUnitTests
                 new Project{Id = 1, Name = "Project 1"},
                 new Project{Id = 2, Name = "Project 2"},
                 new Project{Id = 3, Name = "Project 3"},
+                new Project{Id = 3, Name = "Project 4"}, // no ticket 
             }.AsQueryable();
 
             var ProjMockDbSet = new Mock<DbSet<Project>>();
@@ -133,6 +134,7 @@ namespace ApplicationUnitTests
             Assert.AreEqual(assertedCount, actualCount);
         }
 
+
         [DataRow(1)]
         [TestMethod]
         public void GetTicket_ValidInput_ReturnsTicketEntity(int assertedId)
@@ -159,6 +161,16 @@ namespace ApplicationUnitTests
         {
             int actualCount = TicketBusinessLogic.GetTicketList(1).Count();
             Assert.AreEqual(assertedCount, actualCount);
+        }
+
+        // add to trello
+        [TestMethod]
+        public void GetTicketList_NoListReturning_ThrowsInvalidOperationException()
+        {
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
+                TicketBusinessLogic.GetTicketList(4);
+            });
         }
 
         [DataRow(1)]
