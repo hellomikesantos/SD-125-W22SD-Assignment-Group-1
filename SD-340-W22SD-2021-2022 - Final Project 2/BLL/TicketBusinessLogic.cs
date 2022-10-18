@@ -60,7 +60,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         public List<Ticket> GetCompletedTickets(int projectid)
         {
             List<Ticket> ticketsInProj = repo.GetList(project => project.ProjectId == projectid).ToList();
-            return ticketsInProj.Where(ticket => ticket.Completed == true).ToList();
+            List<Ticket> completedTickets =  ticketsInProj.Where(ticket => ticket.Completed == true).ToList();
+            if (completedTickets.Count != 0)
+            {
+                return completedTickets;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
         // To UnitTest
         // Valid: Test if ticket list is returning all Uncompleted

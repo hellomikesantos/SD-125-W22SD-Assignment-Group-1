@@ -181,6 +181,15 @@ namespace ApplicationUnitTests
             Assert.AreEqual(assertedCount, actualCount);
         }
 
+        [TestMethod]
+        public void GetCompletedTickets_ListCountIsZero_ThrowsInvalidOperationException()
+        {
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
+                TicketBusinessLogic.GetCompletedTickets(2);
+            });
+        }
+
         [DataRow(1)]
         [TestMethod]
         public void GetUncompletedTickets_ValidInput_ReturnsListOFTicketsThatAreUncompleted(int assertedCount)
