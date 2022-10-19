@@ -6,7 +6,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
 {
     public class CommentBusinessLogic
     {
-        private IRepository<Comment> repo;
+        public IRepository<Comment> repo;
         private readonly UserManager<ApplicationUser> _userManager;
         public CommentBusinessLogic(IRepository<Comment> repo, UserManager<ApplicationUser> userManager)
         {

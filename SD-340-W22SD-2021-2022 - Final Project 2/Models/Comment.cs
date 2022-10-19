@@ -14,8 +14,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.Models
         public string Content { get; set; }
 
         public int TicketId { get; set; }
-        public virtual Ticket Ticket { get; set; }
+        public Ticket? Ticket { get; set; }
         public string UserId { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }
