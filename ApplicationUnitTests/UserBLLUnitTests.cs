@@ -130,9 +130,10 @@ namespace ApplicationUnitTests
         }
 
         [TestMethod]
-        public void GetAllUsersWithoutRoleAsync_ValidInput_GetAllUsersWithoutRole()
+        public async Task GetAllUsersWithoutRoleAsync_ValidInput_GetAllUsersWithoutRoleAsync()
         {
-
+            List<ApplicationUser> applicationUsers = await UserBusinessLogic.GetAllUsersWithoutRoleAsync();
+            Assert.IsNotNull(applicationUsers);
         }
     }
 }
