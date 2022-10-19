@@ -94,7 +94,8 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         {
             try
             {
-                ApplicationUser currUser = await _userManager.Users.Include(user => user.OwnedTickets).Include(user => user.WatchedTickets).Include(user => user.Tickets).Include(user => user.Projects).FirstAsync(user => user.UserName == identity);
+                List <ApplicationUser> users = _userManager.Users.ToList();
+                ApplicationUser currUser = await _userManager.FindByNameAsync(identity);
                 return currUser;
             } catch
             {
