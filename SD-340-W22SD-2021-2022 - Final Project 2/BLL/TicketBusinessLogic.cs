@@ -8,14 +8,12 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
     {
         private IRepository<Ticket> repo;
         private readonly UserManager<ApplicationUser> _userManager;
-        
 
         public TicketBusinessLogic(IRepository<Ticket> repo, 
             UserManager<ApplicationUser> userManager)
         {
             this.repo = repo;
             this._userManager = userManager;
-            
         }
 
         // To UnitTest
@@ -46,7 +44,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         // Invalid:.
         public List<Ticket> GetTicketList(int projectId)
         {
-            return repo.GetList(ticket => ticket.ProjectId == projectId).ToList();
+            List<Ticket> ticketList = repo.GetList(ticket => ticket.ProjectId == projectId).ToList();
+            if (ticketList.Count != 0)
+            {
+                return ticketList;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
         // To UnitTest
         // Valid: Test if ticket list is returning all completed
@@ -54,7 +60,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         public List<Ticket> GetCompletedTickets(int projectid)
         {
             List<Ticket> ticketsInProj = repo.GetList(project => project.ProjectId == projectid).ToList();
-            return ticketsInProj.Where(ticket => ticket.Completed == true).ToList();
+            List<Ticket> completedTickets =  ticketsInProj.Where(ticket => ticket.Completed == true).ToList();
+            if (completedTickets.Count != 0)
+            {
+                return completedTickets;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
         // To UnitTest
         // Valid: Test if ticket list is returning all Uncompleted
@@ -62,7 +76,15 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         public List<Ticket> GetUncompletedTickets(int projectid)
         {
             List<Ticket> ticketsInProj = repo.GetList(project => project.ProjectId == projectid).ToList();
-            return ticketsInProj.Where(ticket => ticket.Completed == false).ToList();
+            List<Ticket> uncompletedTickets = ticketsInProj.Where(ticket => ticket.Completed == false).ToList();
+            if(uncompletedTickets.Count != 0)
+            {
+                return uncompletedTickets;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
         // To UnitTest
         // Valid: Test if ticket status is updating to the correct value(true/false).
@@ -85,7 +107,7 @@ namespace SD_340_W22SD_2021_2022___Final_Project_2.BLL
         // Invalid: Hrs will not be on the range 1-999.
         public void UpdateTicketRequiredHours(Ticket entity, int hours)
         {
-            if(hours <= 0 || hours >= 1000)
+            if(hours >= 0 && hours <= 1000)
             {
                 entity.Hours = hours;
                 repo.Update(entity);
