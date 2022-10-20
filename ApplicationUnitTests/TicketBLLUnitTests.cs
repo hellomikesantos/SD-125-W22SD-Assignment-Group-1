@@ -65,7 +65,8 @@ namespace ApplicationUnitTests
             ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.Provider).Returns(ticketData.Provider);
             ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.Expression).Returns(ticketData.Expression);
             ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.ElementType).Returns(ticketData.ElementType);
-            ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.GetEnumerator()).Returns(ticketData.GetEnumerator());
+            ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.GetEnumerator()).Returns(() => ticketData.GetEnumerator());
+            ticketMockDbSet.Setup(d => d.Add(It.IsAny<Ticket>())).Callback<Ticket>((s) => ticketData.Append(s));
 
             var ticketMockContext = new Mock<ApplicationDbContext>();
             ticketMockContext.Setup(m => m.Ticket).Returns(ticketMockDbSet.Object);
