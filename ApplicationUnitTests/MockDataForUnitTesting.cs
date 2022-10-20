@@ -9,7 +9,7 @@ using SD_340_W22SD_2021_2022___Final_Project_2.Models;
 namespace ApplicationUnitTests
 {
     [TestClass]
-    public class MockDataForUnitTest
+    public class MockDataForUnitTesting
     {
 
         private ProjectBusinessLogic ProjectBusinessLogic;
@@ -18,7 +18,7 @@ namespace ApplicationUnitTests
         private UserBusinessLogic UserBusinessLogic;
         private UserManager<ApplicationUser> UserManager;
 
-        public MockDataForUnitTest()
+        public MockDataForUnitTesting()
         {
             // Project DbSet
             var projData = new List<Project>
