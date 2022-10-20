@@ -49,7 +49,7 @@ namespace ApplicationUnitTests
             ProjectBusinessLogic = new ProjectBusinessLogic(new ProjectRepository(projMockContext.Object), UserManager);
 
             // Ticket DbSet
-            var ticketData = new List<Ticket>
+            var rawTicketData = new List<Ticket>
             {
                 //Add comment, dev, owner, watcher
                 new Ticket{Id = 1, ProjectId = 1,Project = projData.First(p => p.Id == 1), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 1 of Project 1"},
@@ -58,14 +58,17 @@ namespace ApplicationUnitTests
                 new Ticket{Id = 4, ProjectId = 3,Project = projData.First(p => p.Id == 3), Completed = true, Priority = Priority.medium, Hours = 5, Name = "Ticket 1 of Project 3"},
                 //new Ticket{Id = 4, ProjectId = 4,Project = projData.First(p => p.Id == 4), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 4"},
                 //new Ticket{Id = 5, ProjectId = 5,Project = projData.First(p => p.Id == 5), Completed = false, Priority = Priority.medium, Hours = 5, Name = "Ticket 5"},
-            }.AsQueryable();
+            };
+
+            var ticketData = rawTicketData.AsQueryable();
 
             var ticketMockDbSet = new Mock<DbSet<Ticket>>();
 
             ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.Provider).Returns(ticketData.Provider);
             ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.Expression).Returns(ticketData.Expression);
             ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.ElementType).Returns(ticketData.ElementType);
-            ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.GetEnumerator()).Returns(ticketData.GetEnumerator());
+            ticketMockDbSet.As<IQueryable<Ticket>>().Setup(m => m.GetEnumerator()).Returns(() => ticketData.GetEnumerator());
+            ticketMockDbSet.Setup(d => d.Add(It.IsAny<Ticket>())).Callback<Ticket>((s) => rawTicketData.Add(s));
 
             var ticketMockContext = new Mock<ApplicationDbContext>();
             ticketMockContext.Setup(m => m.Ticket).Returns(ticketMockDbSet.Object);
@@ -123,7 +126,7 @@ namespace ApplicationUnitTests
             var ticket4True = TicketBusinessLogic.GetTicket(4).Completed = true;
         }
 
-        [DataRow(2)]
+        [DataRow(3)]
         [TestMethod]
         public void CreateTicket_ValidInput_CreatesNewTicketAndAddsToTickets(int assertedCount)
         {
