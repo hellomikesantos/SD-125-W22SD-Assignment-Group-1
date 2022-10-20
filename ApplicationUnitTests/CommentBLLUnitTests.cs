@@ -25,12 +25,14 @@ namespace ApplicationUnitTests
         public CommentBLLUnitTests()
         {
             //DbSet
-            var data = new List<Comment>
+            var rawCommentData = new List<Comment>
             {
                 new Comment {Id = 1, Content = "Good", TicketId = 1, UserId = "1"},
                 new Comment {Id = 2, Content = "Great", TicketId = 1, UserId = "2"},
                 new Comment {Id = 3, Content = "Nice", TicketId = 1, UserId = "3"},
-            }.AsQueryable();
+            };
+
+            var data = rawCommentData.AsQueryable();
         
 
             var mockDbSet = new Mock<DbSet<Comment>>();
@@ -38,7 +40,9 @@ namespace ApplicationUnitTests
             mockDbSet.As<IQueryable<Comment>>().Setup(m => m.Provider).Returns(data.Provider);
             mockDbSet.As<IQueryable<Comment>>().Setup(m => m.Expression).Returns(data.Expression);
             mockDbSet.As<IQueryable<Comment>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockDbSet.As<IQueryable<Comment>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator);
+            mockDbSet.As<IQueryable<Comment>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
+            mockDbSet.Setup(d => d.Add(It.IsAny<Comment>())).Callback<Comment>((s) => rawCommentData.Add(s));
+
 
             var mockContext = new Mock<ApplicationDbContext>();
             mockContext.Setup(c => c.Comment).Returns(mockDbSet.Object);
@@ -59,7 +63,7 @@ namespace ApplicationUnitTests
             Assert.AreEqual(expectedCount, actualCommentCount);
         }
 
-        [DataRow(3)]
+        [DataRow(4)]
         [TestMethod]
         public void CreateComment_ValidInput_CreatesNewCommentAndAddsToComments(int assertedCount)
         {
