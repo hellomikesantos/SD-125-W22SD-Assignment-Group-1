@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SD_340_W22SD_2021_2022___Final_Project_2.BLL;
 using SD_340_W22SD_2021_2022___Final_Project_2.DAL;
@@ -49,19 +50,22 @@ namespace ApplicationUnitTests
             UserBusinessLogic = new UserBusinessLogic(UserManager);
 
             // Project DbSet
-            var projData = new List<Project>
+            var rawprojData = new List<Project>
             {
                 new Project{Id = 1, Name = "Project 1", Developers = UserManager.Users.ToList()},
                 new Project{Id = 2, Name = "Project 2", Developers = UserManager.Users.ToList()},
                 new Project{Id = 3, Name = "Project 3", Developers = UserManager.Users.ToList()},
-            }.AsQueryable();
+            };
+
+            var projData = rawprojData.AsQueryable();
 
             var ProjMockDbSet = new Mock<DbSet<Project>>();
 
             ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.Provider).Returns(projData.Provider);
             ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.Expression).Returns(projData.Expression);
             ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.ElementType).Returns(projData.ElementType);
-            ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.GetEnumerator()).Returns(projData.GetEnumerator());
+            ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.GetEnumerator()).Returns(() => projData.GetEnumerator());
+            ProjMockDbSet.Setup(d => d.Add(It.IsAny<Project>())).Callback<Project>((s) => rawprojData.Add(s));
 
             var projMockContext = new Mock<ApplicationDbContext>();
             projMockContext.Setup(m => m.Project).Returns(ProjMockDbSet.Object);
@@ -104,8 +108,26 @@ namespace ApplicationUnitTests
         [TestMethod]
         public void GetAllProjects_ListCountIsZero_ThrowsInvalidOperationException()
         {
-            ApplicationUser user = UserBusinessLogic.GetUserByUserId("9ac002a1-5cc3-499e-bcc7-36849706b9ff");
-            user.Projects = ProjectBusinessLogic.GetAllProjects();
+            var rawprojData = new List<Project>
+            {
+
+            };
+
+            var projData = rawprojData.AsQueryable();
+
+            var ProjMockDbSet = new Mock<DbSet<Project>>();
+
+            ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.Provider).Returns(projData.Provider);
+            ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.Expression).Returns(projData.Expression);
+            ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.ElementType).Returns(projData.ElementType);
+            ProjMockDbSet.As<IQueryable<Project>>().Setup(m => m.GetEnumerator()).Returns(() => projData.GetEnumerator());
+            ProjMockDbSet.Setup(d => d.Add(It.IsAny<Project>())).Callback<Project>((s) => rawprojData.Add(s));
+
+            var projMockContext = new Mock<ApplicationDbContext>();
+            projMockContext.Setup(m => m.Project).Returns(ProjMockDbSet.Object);
+
+            ProjectBusinessLogic = new ProjectBusinessLogic(new ProjectRepository(projMockContext.Object), UserManager);
+;
             Assert.ThrowsException<InvalidOperationException>(() =>
             {
                 ProjectBusinessLogic.GetAllProjects();
@@ -130,11 +152,12 @@ namespace ApplicationUnitTests
             });
         }
 
-        [DataRow(3)]
+        [DataRow(4)]
         [TestMethod]
         public void CreateProject_ValidInput_CreatesNewProjectAndAddsToProjects(int expectedCount)
         {
             ProjectBusinessLogic.CreateProject(new Project { Name = "New proj", Developers = UserManager.Users.ToList(), Id = 4 });
+            
             int actualCount = ProjectBusinessLogic.GetAllProjects().Count;
 
             Assert.AreEqual(expectedCount, actualCount);
